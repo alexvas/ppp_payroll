@@ -2,30 +2,34 @@ package ppp.payroll
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
 import java.util.*
 
 class UserTests {
+    private val petya: Employee = EmployeeFactory.createHourlyRatedEmployee(
+            UUID.randomUUID(),
+            "Петя",
+            "где-то",
+            100
+    )
+
+    private val vasya: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
+            UUID.randomUUID(),
+            "Вася",
+            "там-то",
+            562,
+    )
+
+    @BeforeAll
+    fun setup() {
+        EmployeeRepo.add(petya)
+        EmployeeRepo.add(vasya)
+    }
 
     @Test
     fun `добавляем работников в репозиторий`() {
-        val petya: Employee = EmployeeFactory.createHourlyRatedEmployee(
-                UUID.randomUUID(),
-                "Петя",
-                "где-то",
-                100
-        )
-
-        val vasya: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
-                UUID.randomUUID(),
-                "Вася",
-                "там-то",
-                562,
-        )
-
-        EmployeeRepo.add(petya)
-        EmployeeRepo.add(vasya)
 
         val ulya: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
@@ -153,6 +157,41 @@ class UserTests {
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("commission")
+    }
+
+    @Test
+    fun `нельзя дважды добавить работника в репозиторий`() {
+        val zhenya: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Женя",
+                "опять не здесь",
+                363,
+                12.0
+        )
+
+        EmployeeRepo.add(zhenya)
+        assertThatThrownBy {
+            EmployeeRepo.add(zhenya)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("twice")
+    }
+
+    @Test
+    fun `удаляем работника из репозитория`() {
+        val fedya: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Федя",
+                "ччч",
+                363,
+                12.0
+        )
+
+        EmployeeRepo.add(fedya)
+        EmployeeRepo.remove(fedya.id)
+
+        assertThat(EmployeeRepo.list())
+                .doesNotContainSequence(fedya)
     }
 
 }
