@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.TimeCardRepo
+import java.time.Instant
 import java.util.*
 
 class UserTests {
@@ -31,6 +33,8 @@ class UserTests {
     @Test
     fun `добавляем работников в репозиторий`() {
 
+        val initialSize = EmployeeRepo.allEmployees().size
+
         val ulya: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
                 "Юля",
@@ -41,8 +45,8 @@ class UserTests {
 
         EmployeeRepo.add(ulya)
 
-        assertThat(EmployeeRepo.list()).hasSize(3)
-        assertThat(EmployeeRepo.list()).contains(petya, vasya, ulya)
+        assertThat(EmployeeRepo.allEmployees()).hasSize(initialSize + 1)
+        assertThat(EmployeeRepo.allEmployees()).contains(petya, vasya, ulya)
     }
 
     @Test
@@ -190,8 +194,27 @@ class UserTests {
         EmployeeRepo.add(fedya)
         EmployeeRepo.remove(fedya.id)
 
-        assertThat(EmployeeRepo.list())
+        assertThat(EmployeeRepo.allEmployees())
                 .doesNotContainSequence(fedya)
+    }
+
+    @Test
+    fun `нельзя удалить работника с учтённым временем`() {
+        val ulyana: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Ульяна",
+                "ччч",
+                63,
+                1.0
+        )
+        EmployeeRepo.add(ulyana)
+        val card = TimeCard(ulyana.id, Instant.now(), 2)
+        TimeCardRepo.add(card)
+        assertThatThrownBy {
+            EmployeeRepo.remove(ulyana.id)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("has time card(s)")
     }
 
 }
