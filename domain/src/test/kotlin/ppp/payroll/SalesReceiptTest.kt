@@ -29,7 +29,7 @@ class SalesReceiptTest {
     fun `добавим продажи`() {
         val receipt = SalesReceipt(sonya.id, Instant.now(), 100)
         SalesReceiptRepo.add(receipt)
-        assertThat(SalesReceiptRepo.allReceipts()).contains(receipt)
+        assertThat(SalesReceiptRepo.allItems()).contains(receipt)
     }
 
     @Test

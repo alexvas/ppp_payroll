@@ -6,7 +6,7 @@ import kotlin.collections.LinkedHashSet
 
 object TimeCardRepo {
 
-    private val cards: MutableSet<TimeCard> = LinkedHashSet()
+    private val items: MutableSet<TimeCard> = LinkedHashSet()
 
     private val modificationLock: Any = Any()
 
@@ -17,7 +17,7 @@ object TimeCardRepo {
     }
 
     private fun doAdd(card: TimeCard) {
-        require(!cards.contains(card)) {
+        require(!items.contains(card)) {
             "It is not allowed to add any card to the repo twice"
         }
         require(
@@ -26,12 +26,12 @@ object TimeCardRepo {
             "Employee for card $card not found"
         }
 
-        cards.add(card)
+        items.add(card)
     }
 
-    fun allCards() = cards.toList()
+    fun allItems() = items.toList()
 
-    fun cardsFor(employeeId: UUID) = cards.asSequence()
+    fun itemsFor(employeeId: UUID) = items.asSequence()
             .filter { it.employeeId == employeeId }
             .toList()
 }

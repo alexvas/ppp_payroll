@@ -6,7 +6,7 @@ import kotlin.collections.LinkedHashSet
 
 object SalesReceiptRepo {
 
-    private val salesReceipts: MutableSet<SalesReceipt> = LinkedHashSet()
+    private val items: MutableSet<SalesReceipt> = LinkedHashSet()
 
     private val modificationLock: Any = Any()
 
@@ -17,7 +17,7 @@ object SalesReceiptRepo {
     }
 
     private fun doAdd(receipt: SalesReceipt) {
-        require(!salesReceipts.contains(receipt)) {
+        require(!items.contains(receipt)) {
             "It is not allowed to add any sales receipt to the repo twice"
         }
         require(
@@ -25,12 +25,12 @@ object SalesReceiptRepo {
         ) {
             "Employee for receipt $receipt not found"
         }
-        salesReceipts.add(receipt)
+        items.add(receipt)
     }
 
-    fun allReceipts() = salesReceipts.toList()
+    fun allItems() = items.toList()
 
-    fun receiptsFor(employeeId: UUID) = salesReceipts.asSequence()
+    fun itemsFor(employeeId: UUID) = items.asSequence()
             .filter { it.employeeId == employeeId }
             .toList()
 

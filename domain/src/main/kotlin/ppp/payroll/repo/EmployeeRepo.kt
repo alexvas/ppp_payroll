@@ -32,11 +32,14 @@ object EmployeeRepo {
     }
 
     private fun doRemove(id: UUID) {
-        require(TimeCardRepo.cardsFor(id).isEmpty()) {
+        require(TimeCardRepo.itemsFor(id).isEmpty()) {
             "It is not allowed to remove employee with id $id: he or she has time card(s)"
         }
-        require(SalesReceiptRepo.receiptsFor(id).isEmpty()) {
+        require(SalesReceiptRepo.itemsFor(id).isEmpty()) {
             "It is not allowed to remove employee with id $id: he or she has sales receipt(s)"
+        }
+        require(UnionRepo.itemsFor(id).isEmpty()) {
+            "It is not allowed to remove employee with id $id: he or she has union charge"
         }
 
         employees.removeIf { id == it.id }

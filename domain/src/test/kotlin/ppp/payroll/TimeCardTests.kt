@@ -28,7 +28,7 @@ class TimeCardTests {
     fun `добавим отработанное время`() {
         val card = TimeCard(zahar.id, Instant.now().plusMillis(1000), 12)
         TimeCardRepo.add(card)
-        assertThat(TimeCardRepo.allCards()).contains(card)
+        assertThat(TimeCardRepo.allItems()).contains(card)
     }
 
     @Test

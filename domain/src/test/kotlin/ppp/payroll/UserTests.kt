@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
 import ppp.payroll.repo.SalesReceiptRepo
 import ppp.payroll.repo.TimeCardRepo
+import ppp.payroll.repo.UnionRepo
 import java.time.Instant
 import java.util.*
 
@@ -235,6 +236,25 @@ class UserTests {
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("has sales receipt(s)")
+    }
+
+    @Test
+    fun `нельзя удалить работника с профсоюзным взносом`() {
+        val igor: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Игорь",
+                "ччч",
+                63,
+                1.0
+        )
+        EmployeeRepo.add(igor)
+        val charge = UnionCharge(igor.id, 1700)
+        UnionRepo.add(charge)
+        assertThatThrownBy {
+            EmployeeRepo.remove(igor.id)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("has union charge")
     }
 
 }
