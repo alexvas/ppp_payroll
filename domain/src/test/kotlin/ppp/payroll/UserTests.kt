@@ -1,6 +1,7 @@
 package ppp.payroll
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
 import java.util.*
@@ -40,5 +41,118 @@ class UserTests {
         assertThat(EmployeeRepo.list()).contains(petya, vasya, ulya)
     }
 
+    @Test
+    fun `нельзя создать работника без имени`() {
+        assertThatThrownBy {
+            EmployeeFactory.createHourlyRatedEmployee(
+                    UUID.randomUUID(),
+                    "",
+                    "где-то",
+                    100
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("name")
+    }
+
+    @Test
+    fun `нельзя создать работника без адреса`() {
+        assertThatThrownBy {
+            EmployeeFactory.createHourlyRatedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "",
+                    100
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("address")
+    }
+
+    @Test
+    fun `нельзя создать работника с отрицательной почасовой ставкой`() {
+        assertThatThrownBy {
+            EmployeeFactory.createHourlyRatedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    -100
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("rate")
+    }
+
+    @Test
+    fun `нельзя создать работника с нулевой почасовой ставкой`() {
+        assertThatThrownBy {
+            EmployeeFactory.createHourlyRatedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    0
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("rate")
+    }
+
+    @Test
+    fun `нельзя создать работника с отрицательной зарплатой`() {
+        assertThatThrownBy {
+            EmployeeFactory.createFlatMonthlySalariedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    -1
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("salary")
+    }
+
+    @Test
+    fun `нельзя создать работника с нулевой зарплатой`() {
+        assertThatThrownBy {
+            EmployeeFactory.createFlatMonthlySalariedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    0
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("salary")
+    }
+
+    @Test
+    fun `нельзя создать работника с нулевой комиссией`() {
+        assertThatThrownBy {
+            EmployeeFactory.createCommissionedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    10,
+                    0.0
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("commission")
+    }
+
+    @Test
+    fun `нельзя создать работника с комиссией, превышающей 100%`() {
+        assertThatThrownBy {
+            EmployeeFactory.createCommissionedEmployee(
+                    UUID.randomUUID(),
+                    "выаывавы",
+                    "вавава",
+                    10,
+                    110.0
+            )
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("commission")
+    }
 
 }
