@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.SalesReceiptRepo
 import ppp.payroll.repo.TimeCardRepo
 import java.time.Instant
 import java.util.*
@@ -215,6 +216,25 @@ class UserTests {
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("has time card(s)")
+    }
+
+    @Test
+    fun `нельзя удалить работника с продажами`() {
+        val efim: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Ефим",
+                "ччч",
+                63,
+                1.0
+        )
+        EmployeeRepo.add(efim)
+        val receipt = SalesReceipt(efim.id, Instant.now(), 700)
+        SalesReceiptRepo.add(receipt)
+        assertThatThrownBy {
+            EmployeeRepo.remove(efim.id)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("has sales receipt(s)")
     }
 
 }

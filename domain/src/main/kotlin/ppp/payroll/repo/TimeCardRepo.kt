@@ -8,10 +8,10 @@ object TimeCardRepo {
 
     private val cards: MutableSet<TimeCard> = LinkedHashSet()
 
-    private val addLock: Any = Any()
+    private val modificationLock: Any = Any()
 
     fun add(card: TimeCard) {
-        synchronized(addLock) {
+        synchronized(modificationLock) {
             doAdd(card)
         }
     }

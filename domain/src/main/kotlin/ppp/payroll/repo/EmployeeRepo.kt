@@ -35,6 +35,9 @@ object EmployeeRepo {
         require(TimeCardRepo.cardsFor(id).isEmpty()) {
             "It is not allowed to remove employee with id $id: he or she has time card(s)"
         }
+        require(SalesReceiptRepo.receiptsFor(id).isEmpty()) {
+            "It is not allowed to remove employee with id $id: he or she has sales receipt(s)"
+        }
 
         employees.removeIf { id == it.id }
     }
