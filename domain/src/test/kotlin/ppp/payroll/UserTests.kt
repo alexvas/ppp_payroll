@@ -4,10 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.EmployeeRepo
-import ppp.payroll.repo.SalesReceiptRepo
-import ppp.payroll.repo.TimeCardRepo
-import ppp.payroll.repo.UnionRepo
+import ppp.payroll.repo.*
 import java.time.Instant
 import java.util.*
 
@@ -255,6 +252,25 @@ class UserTests {
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("has union charge")
+    }
+
+    @Test
+    fun `нельзя удалить работника с выплатами`() {
+        val slavik: Employee = EmployeeFactory.createCommissionedEmployee(
+                UUID.randomUUID(),
+                "Вячеслав",
+                "бгг",
+                13,
+                12.0
+        )
+        EmployeeRepo.add(slavik)
+        val payMethod = PayMethodHold(slavik.id)
+        PaymethodRepo.add(payMethod)
+        assertThatThrownBy {
+            EmployeeRepo.remove(slavik.id)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("has pay method")
     }
 
 }

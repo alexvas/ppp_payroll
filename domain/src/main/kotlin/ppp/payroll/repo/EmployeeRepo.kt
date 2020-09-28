@@ -41,6 +41,9 @@ object EmployeeRepo {
         require(UnionRepo.itemsFor(id).isEmpty()) {
             "It is not allowed to remove employee with id $id: he or she has union charge"
         }
+        require(PaymethodRepo.itemsFor(id).isEmpty()) {
+            "It is not allowed to remove employee with id $id: he or she has pay method"
+        }
 
         employees.removeIf { id == it.id }
     }
