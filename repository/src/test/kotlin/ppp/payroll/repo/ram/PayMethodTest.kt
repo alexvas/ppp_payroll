@@ -8,6 +8,10 @@ import java.util.*
 
 class PayMethodTest {
 
+    private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
+
+    private val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)
+
     @Test
     fun `добавляем Hold`() {
         val zina = Employee(

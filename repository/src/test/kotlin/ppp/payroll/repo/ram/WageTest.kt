@@ -9,6 +9,10 @@ import java.util.*
 
 class WageTest {
 
+    private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
+
+    private val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
+
     @Test
     fun `создаём работника с почасовой ставкой`() {
         val artur = Employee(

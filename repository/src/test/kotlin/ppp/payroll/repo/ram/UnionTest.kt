@@ -4,10 +4,16 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
+import ppp.payroll.EmployeeRepo
+import ppp.payroll.MonoRepo
 import ppp.payroll.UnionCharge
 import java.util.*
 
 class UnionTest {
+
+    private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
+
+    private val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
 
     @Test
     fun `добавим членство в профсоюзе`() {

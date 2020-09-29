@@ -9,6 +9,20 @@ import java.time.Instant
 import java.util.*
 
 class EmployeeTests {
+
+    private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
+
+    private val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(employeeRepo)
+
+    private val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(employeeRepo)
+
+    private val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
+
+    private val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)
+
+    private val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
+
+
     private val petya = Employee(
             UUID.randomUUID(),
             "Петя",
