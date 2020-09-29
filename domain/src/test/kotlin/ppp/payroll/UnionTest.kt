@@ -3,7 +3,7 @@ package ppp.payroll
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.employeeRepo
 import ppp.payroll.repo.unionChargeRepo
 import java.util.*
 
@@ -17,7 +17,7 @@ class UnionTest {
                 "там-то",
                 11
         )
-        EmployeeRepo.add(dima)
+        employeeRepo.add(dima)
 
         val charge = UnionCharge(dima.id, 44)
         unionChargeRepo.add(charge)
@@ -32,7 +32,7 @@ class UnionTest {
                 "север",
                 101
         )
-        EmployeeRepo.add(andrei)
+        employeeRepo.add(andrei)
 
         val charge1 = UnionCharge(andrei.id, 24)
         unionChargeRepo.add(charge1)

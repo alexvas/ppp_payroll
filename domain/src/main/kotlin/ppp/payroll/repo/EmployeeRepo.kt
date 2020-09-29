@@ -4,18 +4,28 @@ import ppp.payroll.Employee
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
-object EmployeeRepo {
+
+interface EmployeeRepo {
     fun interface RemovalListener {
         fun removed(employeeId: UUID)
     }
+
+    fun add(employee: Employee)
+    fun allEmployees(): List<Employee>
+    fun remove(id: UUID)
+    fun hasEmployee(userId: UUID): Boolean
+    fun addRemovalListener(removalListener: RemovalListener)
+}
+
+class EmployeeRepoImpl : EmployeeRepo {
 
     private val employees: MutableSet<Employee> = LinkedHashSet()
 
     private val modificationLock: Any = Any()
 
-    private val removalListeners: MutableList<RemovalListener> = mutableListOf()
+    private val removalListeners: MutableList<EmployeeRepo.RemovalListener> = mutableListOf()
 
-    fun add(employee: Employee) {
+    override fun add(employee: Employee) {
         synchronized(modificationLock) {
             doAdd(employee)
         }
@@ -28,9 +38,9 @@ object EmployeeRepo {
         employees += employee
     }
 
-    fun allEmployees() = employees.toList()
+    override fun allEmployees() = employees.toList()
 
-    fun remove(id: UUID) {
+    override fun remove(id: UUID) {
         synchronized(modificationLock) {
             doRemove(id)
         }
@@ -41,9 +51,9 @@ object EmployeeRepo {
         removalListeners.forEach { it.removed(id) }
     }
 
-    fun hasEmployee(userId: UUID): Boolean = employees.any { it.id == userId }
+    override fun hasEmployee(userId: UUID): Boolean = employees.any { it.id == userId }
 
-    fun addRemovalListener(removalListener: RemovalListener) {
+    override fun addRemovalListener(removalListener: EmployeeRepo.RemovalListener) {
         removalListeners += removalListener
     }
 }

@@ -3,7 +3,7 @@ package ppp.payroll
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.employeeRepo
 import ppp.payroll.repo.payMethodRepo
 import java.util.*
 
@@ -18,7 +18,7 @@ class PayMethodTest {
                 1010,
                 5.0
         )
-        EmployeeRepo.add(zina)
+        employeeRepo.add(zina)
         val payMethod : PayMethod = PayMethodHold(zina.id)
         payMethodRepo.add(payMethod)
         assertThat(payMethodRepo.getFeatureFor(zina.id)).isEqualTo(payMethod)
@@ -33,7 +33,7 @@ class PayMethodTest {
                 1011,
                 5.5
         )
-        EmployeeRepo.add(alena)
+        employeeRepo.add(alena)
         val payMethod : PayMethod = PayMethodDirect(alena.id, "Western Union", 1122334455667788990L)
         payMethodRepo.add(payMethod)
     }
@@ -47,7 +47,7 @@ class PayMethodTest {
                 1012,
                 7.5
         )
-        EmployeeRepo.add(aksinya)
+        employeeRepo.add(aksinya)
         val payMethod : PayMethod = PayMethodMail(aksinya.id, "запад")
         payMethodRepo.add(payMethod)
     }
@@ -60,7 +60,7 @@ class PayMethodTest {
                 "северо-восток",
                 201
         )
-        EmployeeRepo.add(semyon)
+        employeeRepo.add(semyon)
 
         val payMethod1 : PayMethod = PayMethodMail(semyon.id, "северо-восток")
         payMethodRepo.add(payMethod1)

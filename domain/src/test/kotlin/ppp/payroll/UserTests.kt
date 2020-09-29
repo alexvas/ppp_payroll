@@ -25,14 +25,14 @@ class UserTests {
 
     @BeforeAll
     fun setup() {
-        EmployeeRepo.add(petya)
-        EmployeeRepo.add(vasya)
+        employeeRepo.add(petya)
+        employeeRepo.add(vasya)
     }
 
     @Test
     fun `добавляем работников в репозиторий`() {
 
-        val initialSize = EmployeeRepo.allEmployees().size
+        val initialSize = employeeRepo.allEmployees().size
 
         val ulya: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
@@ -42,10 +42,10 @@ class UserTests {
                 10.0
         )
 
-        EmployeeRepo.add(ulya)
+        employeeRepo.add(ulya)
 
-        assertThat(EmployeeRepo.allEmployees()).hasSize(initialSize + 1)
-        assertThat(EmployeeRepo.allEmployees()).contains(petya, vasya, ulya)
+        assertThat(employeeRepo.allEmployees()).hasSize(initialSize + 1)
+        assertThat(employeeRepo.allEmployees()).contains(petya, vasya, ulya)
     }
 
     @Test
@@ -172,9 +172,9 @@ class UserTests {
                 12.0
         )
 
-        EmployeeRepo.add(zhenya)
+        employeeRepo.add(zhenya)
         assertThatThrownBy {
-            EmployeeRepo.add(zhenya)
+            employeeRepo.add(zhenya)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -190,10 +190,10 @@ class UserTests {
                 12.0
         )
 
-        EmployeeRepo.add(fedya)
-        EmployeeRepo.remove(fedya.id)
+        employeeRepo.add(fedya)
+        employeeRepo.remove(fedya.id)
 
-        assertThat(EmployeeRepo.allEmployees())
+        assertThat(employeeRepo.allEmployees())
                 .doesNotContainSequence(fedya)
     }
 
@@ -206,10 +206,10 @@ class UserTests {
                 63,
                 1.0
         )
-        EmployeeRepo.add(ulyana)
+        employeeRepo.add(ulyana)
         val card = TimeCard(ulyana.id, Instant.now(), 2)
         timeCardRepo.add(card)
-        EmployeeRepo.remove(ulyana.id)
+        employeeRepo.remove(ulyana.id)
         assertThat(timeCardRepo.featuresFor(ulyana.id).isEmpty())
     }
 
@@ -222,10 +222,10 @@ class UserTests {
                 63,
                 1.0
         )
-        EmployeeRepo.add(efim)
+        employeeRepo.add(efim)
         val receipt = SalesReceipt(efim.id, Instant.now(), 700)
         salesReceiptRepo.add(receipt)
-        EmployeeRepo.remove(efim.id)
+        employeeRepo.remove(efim.id)
         assertThat(salesReceiptRepo.featuresFor(efim.id).isEmpty())
     }
 
@@ -238,10 +238,10 @@ class UserTests {
                 63,
                 1.0
         )
-        EmployeeRepo.add(igor)
+        employeeRepo.add(igor)
         val charge = UnionCharge(igor.id, 1700)
         unionChargeRepo.add(charge)
-        EmployeeRepo.remove(igor.id)
+        employeeRepo.remove(igor.id)
         assertThat(unionChargeRepo.getFeatureFor(igor.id) == null)
     }
 
@@ -254,10 +254,10 @@ class UserTests {
                 13,
                 12.0
         )
-        EmployeeRepo.add(slavik)
+        employeeRepo.add(slavik)
         val payMethod = PayMethodHold(slavik.id)
         payMethodRepo.add(payMethod)
-        EmployeeRepo.remove(slavik.id)
+        employeeRepo.remove(slavik.id)
         assertThat(payMethodRepo.getFeatureFor(slavik.id) == null)
     }
 

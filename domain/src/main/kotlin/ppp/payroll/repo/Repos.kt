@@ -109,10 +109,12 @@ class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) 
     override fun getFeatureFor(employeeId: UUID): T? = features[employeeId]
 }
 
-val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(EmployeeRepo)
+val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(EmployeeRepo)
+val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(employeeRepo)
 
-val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(EmployeeRepo)
+val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(employeeRepo)
 
-val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(EmployeeRepo)
+val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
+
+val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)

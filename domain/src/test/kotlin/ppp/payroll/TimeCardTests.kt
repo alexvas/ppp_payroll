@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.employeeRepo
 import ppp.payroll.repo.timeCardRepo
 import java.time.Instant
 import java.util.*
@@ -19,7 +19,7 @@ class TimeCardTests {
 
     @BeforeAll
     fun setup() {
-        EmployeeRepo.add(zahar)
+        employeeRepo.add(zahar)
         val card = TimeCard(zahar.id, Instant.now(), 12)
         timeCardRepo.add(card)
     }

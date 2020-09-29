@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.EmployeeRepo
+import ppp.payroll.repo.employeeRepo
 import ppp.payroll.repo.salesReceiptRepo
 import java.time.Instant
 import java.util.*
@@ -20,7 +20,7 @@ class SalesReceiptTest {
 
     @BeforeAll
     fun setup() {
-        EmployeeRepo.add(sonya)
+        employeeRepo.add(sonya)
         val receipt = SalesReceipt(sonya.id, Instant.now(), 200)
         salesReceiptRepo.add(receipt)
     }
