@@ -24,9 +24,9 @@ class UnionMembershipTest {
         )
         employeeRepo.add(dima)
 
-        val charge = UnionMembership(dima.id, 44)
-        unionMembershipRepo.add(charge)
-        assertThat(unionMembershipRepo.getFeatureFor(dima.id)).isEqualTo(charge)
+        val membership = UnionMembership(dima.id, 44)
+        unionMembershipRepo.add(membership)
+        assertThat(unionMembershipRepo.getFeatureFor(dima.id)).isEqualTo(membership)
     }
 
     @Test
@@ -38,10 +38,25 @@ class UnionMembershipTest {
         )
         employeeRepo.add(stas)
 
-        val charge = UnionMembership(stas.id, 45)
-        unionMembershipRepo.add(charge)
+        val membership = UnionMembership(stas.id, 45)
+        unionMembershipRepo.add(membership)
         unionMembershipRepo.updateDueRate(stas.id, 13)
         assertThat(unionMembershipRepo.getFeatureFor(stas.id)!!.dueRate).isEqualTo(13)
+    }
+
+    @Test
+    fun `исключаем из профсоюза`() {
+        val anfisa = Employee(
+                UUID.randomUUID(),
+                "Анфиса",
+                "там-то",
+        )
+        employeeRepo.add(anfisa)
+
+        val membership = UnionMembership(anfisa.id, 315)
+        unionMembershipRepo.add(membership)
+        unionMembershipRepo.noMember(anfisa.id)
+        assertThat(unionMembershipRepo.getFeatureFor(anfisa.id)).isNull()
     }
 
     @Test
@@ -53,13 +68,13 @@ class UnionMembershipTest {
         )
         employeeRepo.add(andrei)
 
-        val charge1 = UnionMembership(andrei.id, 24)
-        unionMembershipRepo.add(charge1)
+        val membership1 = UnionMembership(andrei.id, 24)
+        unionMembershipRepo.add(membership1)
 
-        val charge2 = UnionMembership(andrei.id, 15)
+        val membership2 = UnionMembership(andrei.id, 15)
 
         Assertions.assertThatThrownBy {
-            unionMembershipRepo.add(charge2)
+            unionMembershipRepo.add(membership2)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -67,10 +82,10 @@ class UnionMembershipTest {
 
     @Test
     fun `нельзя зарегистрировать вычет профсоюзного взноса для несуществующего работника`() {
-        val charge = UnionMembership(UUID.randomUUID(), 3)
+        val membership = UnionMembership(UUID.randomUUID(), 3)
 
         Assertions.assertThatThrownBy {
-            unionMembershipRepo.add(charge)
+            unionMembershipRepo.add(membership)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")

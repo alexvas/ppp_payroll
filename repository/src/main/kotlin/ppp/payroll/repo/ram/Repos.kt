@@ -87,4 +87,10 @@ class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo,
         features[employeeId] = membership.copy(dueRate = dueRate)
     }
 
+    override fun noMember(employeeId: UUID) {
+        synchronized(modificationLock) {
+            features.remove(employeeId)
+        }
+    }
+
 }

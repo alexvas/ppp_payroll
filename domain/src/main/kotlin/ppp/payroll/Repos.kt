@@ -59,4 +59,5 @@ interface EmployeeRepo {
 
 interface UnionMembershipRepo: MonoRepo<UnionMembership> {
     fun updateDueRate(employeeId: UUID, dueRate: Int)
+    fun noMember(employeeId: UUID)
 }
