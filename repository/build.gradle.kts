@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    //  application
 }
 
 repositories {
@@ -21,12 +20,6 @@ dependencies {
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
-
-/*
-application {
-    mainClassName = "MainKt"
-}
-*/
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
