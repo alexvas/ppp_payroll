@@ -1,9 +1,10 @@
 package ppp.payroll
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
-import ppp.payroll.repo.PaymethodRepo
+import ppp.payroll.repo.payMethodRepo
 import java.util.*
 
 class PayMethodTest {
@@ -19,7 +20,8 @@ class PayMethodTest {
         )
         EmployeeRepo.add(zina)
         val payMethod : PayMethod = PayMethodHold(zina.id)
-        PaymethodRepo.add(payMethod)
+        payMethodRepo.add(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(zina.id)).isEqualTo(payMethod)
     }
 
     @Test
@@ -33,7 +35,7 @@ class PayMethodTest {
         )
         EmployeeRepo.add(alena)
         val payMethod : PayMethod = PayMethodDirect(alena.id, "Western Union", 1122334455667788990L)
-        PaymethodRepo.add(payMethod)
+        payMethodRepo.add(payMethod)
     }
 
     @Test
@@ -47,7 +49,7 @@ class PayMethodTest {
         )
         EmployeeRepo.add(aksinya)
         val payMethod : PayMethod = PayMethodMail(aksinya.id, "запад")
-        PaymethodRepo.add(payMethod)
+        payMethodRepo.add(payMethod)
     }
 
     @Test
@@ -61,12 +63,12 @@ class PayMethodTest {
         EmployeeRepo.add(semyon)
 
         val payMethod1 : PayMethod = PayMethodMail(semyon.id, "северо-восток")
-        PaymethodRepo.add(payMethod1)
+        payMethodRepo.add(payMethod1)
 
         val payMethod2 : PayMethod = PayMethodHold(semyon.id)
 
         Assertions.assertThatThrownBy {
-            PaymethodRepo.add(payMethod2)
+            payMethodRepo.add(payMethod2)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -77,7 +79,7 @@ class PayMethodTest {
         val payMethod : PayMethod = PayMethodDirect(UUID.randomUUID(), "J.P. Morgan", 998877665544332211L)
 
         Assertions.assertThatThrownBy {
-            PaymethodRepo.add(payMethod)
+            payMethodRepo.add(payMethod)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")

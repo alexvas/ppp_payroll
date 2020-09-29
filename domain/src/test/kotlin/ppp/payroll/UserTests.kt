@@ -208,7 +208,7 @@ class UserTests {
         )
         EmployeeRepo.add(ulyana)
         val card = TimeCard(ulyana.id, Instant.now(), 2)
-        TimeCardRepo.add(card)
+        timeCardRepo.add(card)
         assertThatThrownBy {
             EmployeeRepo.remove(ulyana.id)
         }
@@ -227,7 +227,7 @@ class UserTests {
         )
         EmployeeRepo.add(efim)
         val receipt = SalesReceipt(efim.id, Instant.now(), 700)
-        SalesReceiptRepo.add(receipt)
+        salesReceiptRepo.add(receipt)
         assertThatThrownBy {
             EmployeeRepo.remove(efim.id)
         }
@@ -246,7 +246,7 @@ class UserTests {
         )
         EmployeeRepo.add(igor)
         val charge = UnionCharge(igor.id, 1700)
-        UnionRepo.add(charge)
+        unionChargeRepo.add(charge)
         assertThatThrownBy {
             EmployeeRepo.remove(igor.id)
         }
@@ -265,7 +265,7 @@ class UserTests {
         )
         EmployeeRepo.add(slavik)
         val payMethod = PayMethodHold(slavik.id)
-        PaymethodRepo.add(payMethod)
+        payMethodRepo.add(payMethod)
         assertThatThrownBy {
             EmployeeRepo.remove(slavik.id)
         }

@@ -1,9 +1,10 @@
 package ppp.payroll
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
-import ppp.payroll.repo.UnionRepo
+import ppp.payroll.repo.unionChargeRepo
 import java.util.*
 
 class UnionTest {
@@ -19,8 +20,8 @@ class UnionTest {
         EmployeeRepo.add(dima)
 
         val charge = UnionCharge(dima.id, 44)
-        UnionRepo.add(charge)
-        Assertions.assertThat(UnionRepo.allItems()).contains(charge)
+        unionChargeRepo.add(charge)
+        assertThat(unionChargeRepo.getFeatureFor(dima.id)).isEqualTo(charge)
     }
 
     @Test
@@ -34,12 +35,12 @@ class UnionTest {
         EmployeeRepo.add(andrei)
 
         val charge1 = UnionCharge(andrei.id, 24)
-        UnionRepo.add(charge1)
+        unionChargeRepo.add(charge1)
 
         val charge2 = UnionCharge(andrei.id, 15)
 
         Assertions.assertThatThrownBy {
-            UnionRepo.add(charge2)
+            unionChargeRepo.add(charge2)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -50,7 +51,7 @@ class UnionTest {
         val charge = UnionCharge(UUID.randomUUID(), 3)
 
         Assertions.assertThatThrownBy {
-            UnionRepo.add(charge)
+            unionChargeRepo.add(charge)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")

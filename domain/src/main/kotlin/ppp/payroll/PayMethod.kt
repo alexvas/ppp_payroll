@@ -1,9 +1,10 @@
 package ppp.payroll
 
+import ppp.payroll.repo.EmployeeFeature
 import java.util.*
 
-interface PayMethod {
-    val employeeId: UUID
+interface PayMethod: EmployeeFeature {
+    override val employeeId: UUID
     val type: PayMethodType
 }
 

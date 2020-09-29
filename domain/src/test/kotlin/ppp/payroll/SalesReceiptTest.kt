@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.repo.EmployeeRepo
-import ppp.payroll.repo.SalesReceiptRepo
+import ppp.payroll.repo.salesReceiptRepo
 import java.time.Instant
 import java.util.*
 
@@ -22,22 +22,22 @@ class SalesReceiptTest {
     fun setup() {
         EmployeeRepo.add(sonya)
         val receipt = SalesReceipt(sonya.id, Instant.now(), 200)
-        SalesReceiptRepo.add(receipt)
+        salesReceiptRepo.add(receipt)
     }
 
     @Test
     fun `добавим продажи`() {
         val receipt = SalesReceipt(sonya.id, Instant.now(), 100)
-        SalesReceiptRepo.add(receipt)
-        assertThat(SalesReceiptRepo.allItems()).contains(receipt)
+        salesReceiptRepo.add(receipt)
+        assertThat(salesReceiptRepo.allFeatures()).contains(receipt)
     }
 
     @Test
     fun `конкретную продажу нельзя учесть дважды`() {
         val receipt = SalesReceipt(sonya.id, Instant.now().plusMillis(150), 12)
-        SalesReceiptRepo.add(receipt)
+        salesReceiptRepo.add(receipt)
         Assertions.assertThatThrownBy {
-            SalesReceiptRepo.add(receipt)
+            salesReceiptRepo.add(receipt)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -47,7 +47,7 @@ class SalesReceiptTest {
     fun `нельзя учесть продажу для несуществующего работника`() {
         val receipt = SalesReceipt(UUID.randomUUID(), Instant.now(), 1)
         Assertions.assertThatThrownBy {
-            SalesReceiptRepo.add(receipt)
+            salesReceiptRepo.add(receipt)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")
