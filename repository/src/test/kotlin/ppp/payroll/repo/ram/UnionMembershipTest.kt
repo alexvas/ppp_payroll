@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
 import ppp.payroll.EmployeeRepo
 import ppp.payroll.MonoRepo
-import ppp.payroll.UnionCharge
+import ppp.payroll.UnionMembership
 import java.util.*
 
-class UnionTest {
+class UnionMembershipTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
+    private val unionMembershipRepo: MonoRepo<UnionMembership> = MonoRepoBase(employeeRepo)
 
     @Test
     fun `добавим членство в профсоюзе`() {
@@ -24,9 +24,9 @@ class UnionTest {
         )
         employeeRepo.add(dima)
 
-        val charge = UnionCharge(dima.id, 44)
-        unionChargeRepo.add(charge)
-        assertThat(unionChargeRepo.getFeatureFor(dima.id)).isEqualTo(charge)
+        val charge = UnionMembership(dima.id, 44)
+        unionMembershipRepo.add(charge)
+        assertThat(unionMembershipRepo.getFeatureFor(dima.id)).isEqualTo(charge)
     }
 
     @Test
@@ -38,13 +38,13 @@ class UnionTest {
         )
         employeeRepo.add(andrei)
 
-        val charge1 = UnionCharge(andrei.id, 24)
-        unionChargeRepo.add(charge1)
+        val charge1 = UnionMembership(andrei.id, 24)
+        unionMembershipRepo.add(charge1)
 
-        val charge2 = UnionCharge(andrei.id, 15)
+        val charge2 = UnionMembership(andrei.id, 15)
 
         Assertions.assertThatThrownBy {
-            unionChargeRepo.add(charge2)
+            unionMembershipRepo.add(charge2)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -52,10 +52,10 @@ class UnionTest {
 
     @Test
     fun `нельзя зарегистрировать вычет профсоюзного взноса для несуществующего работника`() {
-        val charge = UnionCharge(UUID.randomUUID(), 3)
+        val charge = UnionMembership(UUID.randomUUID(), 3)
 
         Assertions.assertThatThrownBy {
-            unionChargeRepo.add(charge)
+            unionMembershipRepo.add(charge)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")
