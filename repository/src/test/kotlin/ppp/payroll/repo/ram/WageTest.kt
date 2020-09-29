@@ -135,4 +135,65 @@ class WageTest {
                 .hasMessageContaining("commission")
     }
 
+    @Test
+    fun `меняем зарплату на постоянную`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val hourly: Wage = HourlyRate(
+                employee.id,
+                100,
+        )
+        wageRepo.add(hourly)
+
+        val flat: Wage = FlatMonthlySalary(
+                employee.id,
+                120,
+        )
+        wageRepo.update(employee.id) {
+            flat
+        }
+        assertThat(wageRepo.getFeatureFor(employee.id)).isEqualTo(flat)
+    }
+
+    @Test
+    fun `меняем зарплату на процентную выплату`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val hourly: Wage = HourlyRate(
+                employee.id,
+                100,
+        )
+        wageRepo.add(hourly)
+
+        val commission: Wage = Commission(
+                employee.id,
+                8,
+                12.0
+        )
+        wageRepo.update(employee.id) {
+            commission
+        }
+        assertThat(wageRepo.getFeatureFor(employee.id)).isEqualTo(commission)
+    }
+
+    @Test
+    fun `меняем зарплату на почасовую`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+
+        val flat: Wage = FlatMonthlySalary(
+                employee.id,
+                120,
+        )
+        wageRepo.add(flat)
+        val hourly: Wage = HourlyRate(
+                employee.id,
+                100,
+        )
+        wageRepo.update(employee.id) {
+            hourly
+        }
+        assertThat(wageRepo.getFeatureFor(employee.id)).isEqualTo(hourly)
+    }
+
 }
