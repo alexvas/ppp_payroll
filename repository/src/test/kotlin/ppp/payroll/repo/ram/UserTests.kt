@@ -9,18 +9,16 @@ import java.time.Instant
 import java.util.*
 
 class UserTests {
-    private val petya: Employee = HourlyRatedEmployee(
+    private val petya = Employee(
             UUID.randomUUID(),
             "Петя",
             "где-то",
-            100
     )
 
-    private val vasya: Employee = FlatMonthlySalariedEmployee(
+    private val vasya = Employee(
             UUID.randomUUID(),
             "Вася",
             "там-то",
-            562,
     )
 
     @BeforeAll
@@ -34,12 +32,10 @@ class UserTests {
 
         val initialSize = employeeRepo.allEmployees().size
 
-        val ulya: Employee = CommissionedEmployee(
+        val ulya = Employee(
                 UUID.randomUUID(),
                 "Юля",
                 "не здесь",
-                362,
-                10.0
         )
 
         employeeRepo.add(ulya)
@@ -51,11 +47,10 @@ class UserTests {
     @Test
     fun `нельзя создать работника без имени`() {
         assertThatThrownBy {
-            HourlyRatedEmployee(
+            Employee(
                     UUID.randomUUID(),
                     "",
                     "где-то",
-                    100
             )
         }
                 .isInstanceOf(RuntimeException::class.java)
@@ -65,11 +60,10 @@ class UserTests {
     @Test
     fun `нельзя создать работника без адреса`() {
         assertThatThrownBy {
-            HourlyRatedEmployee(
+            Employee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "",
-                    100
             )
         }
                 .isInstanceOf(RuntimeException::class.java)
@@ -77,99 +71,11 @@ class UserTests {
     }
 
     @Test
-    fun `нельзя создать работника с отрицательной почасовой ставкой`() {
-        assertThatThrownBy {
-            HourlyRatedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    -100
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("rate")
-    }
-
-    @Test
-    fun `нельзя создать работника с нулевой почасовой ставкой`() {
-        assertThatThrownBy {
-            HourlyRatedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    0
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("rate")
-    }
-
-    @Test
-    fun `нельзя создать работника с отрицательной зарплатой`() {
-        assertThatThrownBy {
-            FlatMonthlySalariedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    -1
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("salary")
-    }
-
-    @Test
-    fun `нельзя создать работника с нулевой зарплатой`() {
-        assertThatThrownBy {
-            FlatMonthlySalariedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    0
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("salary")
-    }
-
-    @Test
-    fun `нельзя создать работника с нулевой комиссией`() {
-        assertThatThrownBy {
-            CommissionedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    10,
-                    0.0
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("commission")
-    }
-
-    @Test
-    fun `нельзя создать работника с комиссией, превышающей 100%`() {
-        assertThatThrownBy {
-            CommissionedEmployee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "вавава",
-                    10,
-                    110.0
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("commission")
-    }
-
-    @Test
     fun `нельзя дважды добавить работника в репозиторий`() {
-        val zhenya: Employee = CommissionedEmployee(
+        val zhenya = Employee(
                 UUID.randomUUID(),
                 "Женя",
                 "опять не здесь",
-                363,
-                12.0
         )
 
         employeeRepo.add(zhenya)
@@ -182,12 +88,10 @@ class UserTests {
 
     @Test
     fun `удаляем работника из репозитория`() {
-        val fedya: Employee = CommissionedEmployee(
+        val fedya = Employee(
                 UUID.randomUUID(),
                 "Федя",
                 "ччч",
-                363,
-                12.0
         )
 
         employeeRepo.add(fedya)
@@ -198,13 +102,11 @@ class UserTests {
     }
 
     @Test
-    fun `можно удалить работника с учтённым временем`() {
-        val ulyana: Employee = CommissionedEmployee(
+    fun `можно удалить работника с учтённым временем (удалится отовсюду)`() {
+        val ulyana = Employee(
                 UUID.randomUUID(),
                 "Ульяна",
                 "ччч",
-                63,
-                1.0
         )
         employeeRepo.add(ulyana)
         val card = TimeCard(ulyana.id, Instant.now(), 2)
@@ -214,13 +116,11 @@ class UserTests {
     }
 
     @Test
-    fun `можно удалить работника с продажами`() {
-        val efim: Employee = CommissionedEmployee(
+    fun `можно удалить работника с продажами (удалится отовсюду)`() {
+        val efim = Employee(
                 UUID.randomUUID(),
                 "Ефим",
                 "ччч",
-                63,
-                1.0
         )
         employeeRepo.add(efim)
         val receipt = SalesReceipt(efim.id, Instant.now(), 700)
@@ -230,13 +130,11 @@ class UserTests {
     }
 
     @Test
-    fun `можно удалить работника с профсоюзным взносом`() {
-        val igor: Employee = CommissionedEmployee(
+    fun `можно удалить работника с профсоюзным взносом (удалится отовсюду)`() {
+        val igor = Employee(
                 UUID.randomUUID(),
                 "Игорь",
                 "ччч",
-                63,
-                1.0
         )
         employeeRepo.add(igor)
         val charge = UnionCharge(igor.id, 1700)
@@ -246,19 +144,31 @@ class UserTests {
     }
 
     @Test
-    fun `можно удалить работника с выплатами`() {
-        val slavik: Employee = CommissionedEmployee(
+    fun `можно удалить работника с выплатами (удалится отовсюду)`() {
+        val slavik = Employee(
                 UUID.randomUUID(),
                 "Вячеслав",
                 "бгг",
-                13,
-                12.0
         )
         employeeRepo.add(slavik)
         val payMethod = PayMethodHold(slavik.id)
         payMethodRepo.add(payMethod)
         employeeRepo.remove(slavik.id)
         assertThat(payMethodRepo.getFeatureFor(slavik.id) == null)
+    }
+
+    @Test
+    fun `можно удалить работника с зарплатой (удалится отовсюду)`() {
+        val denis = Employee(
+                UUID.randomUUID(),
+                "Денис",
+                "офф",
+        )
+        employeeRepo.add(denis)
+        val wage = FlatMonthlySalary(denis.id, 15)
+        wageRepo.add(wage)
+        employeeRepo.remove(denis.id)
+        assertThat(wageRepo.getFeatureFor(denis.id) == null)
     }
 
 }

@@ -4,19 +4,16 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import ppp.payroll.CommissionedEmployee
 import ppp.payroll.Employee
 import ppp.payroll.SalesReceipt
 import java.time.Instant
 import java.util.*
 
 class SalesReceiptTest {
-    private val sonya: Employee = CommissionedEmployee(
+    private val sonya = Employee(
             UUID.randomUUID(),
             "Соня",
             "везде",
-            10,
-            5.0
     )
 
     @BeforeAll
@@ -31,6 +28,7 @@ class SalesReceiptTest {
         val receipt = SalesReceipt(sonya.id, Instant.now(), 100)
         salesReceiptRepo.add(receipt)
         assertThat(salesReceiptRepo.allFeatures()).contains(receipt)
+        assertThat(salesReceiptRepo.featuresFor(sonya.id)).contains(receipt)
     }
 
     @Test

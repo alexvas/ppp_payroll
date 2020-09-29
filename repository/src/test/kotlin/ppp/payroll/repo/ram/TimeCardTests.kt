@@ -5,17 +5,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
-import ppp.payroll.HourlyRatedEmployee
 import ppp.payroll.TimeCard
 import java.time.Instant
 import java.util.*
 
 class TimeCardTests {
-    private val zahar: Employee = HourlyRatedEmployee(
+    private val zahar = Employee(
             UUID.randomUUID(),
             "Захар",
-            "где-то",
-            100
+            "где-то"
     )
 
     @BeforeAll
@@ -30,6 +28,7 @@ class TimeCardTests {
         val card = TimeCard(zahar.id, Instant.now().plusMillis(1000), 12)
         timeCardRepo.add(card)
         assertThat(timeCardRepo.allFeatures()).contains(card)
+        assertThat(timeCardRepo.featuresFor(zahar.id)).contains(card)
     }
 
     @Test

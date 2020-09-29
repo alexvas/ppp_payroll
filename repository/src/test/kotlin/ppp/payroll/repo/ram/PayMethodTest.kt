@@ -10,12 +10,10 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Hold`() {
-        val zina: Employee = CommissionedEmployee(
+        val zina = Employee(
                 UUID.randomUUID(),
                 "Зина",
                 "юг",
-                1010,
-                5.0
         )
         employeeRepo.add(zina)
         val payMethod : PayMethod = PayMethodHold(zina.id)
@@ -25,12 +23,10 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Direct`() {
-        val alena: Employee = CommissionedEmployee(
+        val alena = Employee(
                 UUID.randomUUID(),
                 "Алёна",
                 "восток",
-                1011,
-                5.5
         )
         employeeRepo.add(alena)
         val payMethod : PayMethod = PayMethodDirect(alena.id, "Western Union", 1122334455667788990L)
@@ -39,12 +35,10 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Mail`() {
-        val aksinya: Employee = CommissionedEmployee(
+        val aksinya = Employee(
                 UUID.randomUUID(),
                 "Аксинья",
                 "запад",
-                1012,
-                7.5
         )
         employeeRepo.add(aksinya)
         val payMethod : PayMethod = PayMethodMail(aksinya.id, "запад")
@@ -53,14 +47,12 @@ class PayMethodTest {
 
     @Test
     fun `работнику нельзя заплатить дважды`() {
-        val semyon: Employee = FlatMonthlySalariedEmployee(
+        val semyon = Employee(
                 UUID.randomUUID(),
                 "Семён",
                 "северо-восток",
-                201
         )
         employeeRepo.add(semyon)
-
         val payMethod1 : PayMethod = PayMethodMail(semyon.id, "северо-восток")
         payMethodRepo.add(payMethod1)
 

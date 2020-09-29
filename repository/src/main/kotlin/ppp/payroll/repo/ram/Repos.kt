@@ -83,3 +83,5 @@ val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(employeeRepo)
 val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
 
 val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)
+
+val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
