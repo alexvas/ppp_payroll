@@ -10,7 +10,7 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Hold`() {
-        val zina: Employee = EmployeeFactory.createCommissionedEmployee(
+        val zina: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Зина",
                 "юг",
@@ -25,7 +25,7 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Direct`() {
-        val alena: Employee = EmployeeFactory.createCommissionedEmployee(
+        val alena: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Алёна",
                 "восток",
@@ -39,7 +39,7 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Mail`() {
-        val aksinya: Employee = EmployeeFactory.createCommissionedEmployee(
+        val aksinya: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Аксинья",
                 "запад",
@@ -53,7 +53,7 @@ class PayMethodTest {
 
     @Test
     fun `работнику нельзя заплатить дважды`() {
-        val semyon: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
+        val semyon: Employee = FlatMonthlySalariedEmployee(
                 UUID.randomUUID(),
                 "Семён",
                 "северо-восток",

@@ -5,13 +5,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
-import ppp.payroll.EmployeeFactory
+import ppp.payroll.HourlyRatedEmployee
 import ppp.payroll.TimeCard
 import java.time.Instant
 import java.util.*
 
 class TimeCardTests {
-    private val zahar: Employee = EmployeeFactory.createHourlyRatedEmployee(
+    private val zahar: Employee = HourlyRatedEmployee(
             UUID.randomUUID(),
             "Захар",
             "где-то",

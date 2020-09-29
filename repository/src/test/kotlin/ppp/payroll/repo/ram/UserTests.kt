@@ -9,14 +9,14 @@ import java.time.Instant
 import java.util.*
 
 class UserTests {
-    private val petya: Employee = EmployeeFactory.createHourlyRatedEmployee(
+    private val petya: Employee = HourlyRatedEmployee(
             UUID.randomUUID(),
             "Петя",
             "где-то",
             100
     )
 
-    private val vasya: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
+    private val vasya: Employee = FlatMonthlySalariedEmployee(
             UUID.randomUUID(),
             "Вася",
             "там-то",
@@ -34,7 +34,7 @@ class UserTests {
 
         val initialSize = employeeRepo.allEmployees().size
 
-        val ulya: Employee = EmployeeFactory.createCommissionedEmployee(
+        val ulya: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Юля",
                 "не здесь",
@@ -51,7 +51,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника без имени`() {
         assertThatThrownBy {
-            EmployeeFactory.createHourlyRatedEmployee(
+            HourlyRatedEmployee(
                     UUID.randomUUID(),
                     "",
                     "где-то",
@@ -65,7 +65,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника без адреса`() {
         assertThatThrownBy {
-            EmployeeFactory.createHourlyRatedEmployee(
+            HourlyRatedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "",
@@ -79,7 +79,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с отрицательной почасовой ставкой`() {
         assertThatThrownBy {
-            EmployeeFactory.createHourlyRatedEmployee(
+            HourlyRatedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -93,7 +93,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с нулевой почасовой ставкой`() {
         assertThatThrownBy {
-            EmployeeFactory.createHourlyRatedEmployee(
+            HourlyRatedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -107,7 +107,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с отрицательной зарплатой`() {
         assertThatThrownBy {
-            EmployeeFactory.createFlatMonthlySalariedEmployee(
+            FlatMonthlySalariedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -121,7 +121,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с нулевой зарплатой`() {
         assertThatThrownBy {
-            EmployeeFactory.createFlatMonthlySalariedEmployee(
+            FlatMonthlySalariedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -135,7 +135,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с нулевой комиссией`() {
         assertThatThrownBy {
-            EmployeeFactory.createCommissionedEmployee(
+            CommissionedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -150,7 +150,7 @@ class UserTests {
     @Test
     fun `нельзя создать работника с комиссией, превышающей 100%`() {
         assertThatThrownBy {
-            EmployeeFactory.createCommissionedEmployee(
+            CommissionedEmployee(
                     UUID.randomUUID(),
                     "выаывавы",
                     "вавава",
@@ -164,7 +164,7 @@ class UserTests {
 
     @Test
     fun `нельзя дважды добавить работника в репозиторий`() {
-        val zhenya: Employee = EmployeeFactory.createCommissionedEmployee(
+        val zhenya: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Женя",
                 "опять не здесь",
@@ -182,7 +182,7 @@ class UserTests {
 
     @Test
     fun `удаляем работника из репозитория`() {
-        val fedya: Employee = EmployeeFactory.createCommissionedEmployee(
+        val fedya: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Федя",
                 "ччч",
@@ -199,7 +199,7 @@ class UserTests {
 
     @Test
     fun `можно удалить работника с учтённым временем`() {
-        val ulyana: Employee = EmployeeFactory.createCommissionedEmployee(
+        val ulyana: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Ульяна",
                 "ччч",
@@ -215,7 +215,7 @@ class UserTests {
 
     @Test
     fun `можно удалить работника с продажами`() {
-        val efim: Employee = EmployeeFactory.createCommissionedEmployee(
+        val efim: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Ефим",
                 "ччч",
@@ -231,7 +231,7 @@ class UserTests {
 
     @Test
     fun `можно удалить работника с профсоюзным взносом`() {
-        val igor: Employee = EmployeeFactory.createCommissionedEmployee(
+        val igor: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Игорь",
                 "ччч",
@@ -247,7 +247,7 @@ class UserTests {
 
     @Test
     fun `можно удалить работника с выплатами`() {
-        val slavik: Employee = EmployeeFactory.createCommissionedEmployee(
+        val slavik: Employee = CommissionedEmployee(
                 UUID.randomUUID(),
                 "Вячеслав",
                 "бгг",

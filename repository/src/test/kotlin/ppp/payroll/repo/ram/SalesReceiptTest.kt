@@ -4,14 +4,14 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import ppp.payroll.CommissionedEmployee
 import ppp.payroll.Employee
-import ppp.payroll.EmployeeFactory
 import ppp.payroll.SalesReceipt
 import java.time.Instant
 import java.util.*
 
 class SalesReceiptTest {
-    private val sonya: Employee = EmployeeFactory.createCommissionedEmployee(
+    private val sonya: Employee = CommissionedEmployee(
             UUID.randomUUID(),
             "Соня",
             "везде",

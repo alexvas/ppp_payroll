@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
-import ppp.payroll.EmployeeFactory
+import ppp.payroll.FlatMonthlySalariedEmployee
 import ppp.payroll.UnionCharge
 import java.util.*
 
@@ -12,7 +12,7 @@ class UnionTest {
 
     @Test
     fun `добавим членство в профсоюзе`() {
-        val dima: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
+        val dima: Employee = FlatMonthlySalariedEmployee(
                 UUID.randomUUID(),
                 "Дмитрий",
                 "там-то",
@@ -27,7 +27,7 @@ class UnionTest {
 
     @Test
     fun `у работника нельзя вычесть два профсоюзных взноса`() {
-        val andrei: Employee = EmployeeFactory.createFlatMonthlySalariedEmployee(
+        val andrei: Employee = FlatMonthlySalariedEmployee(
                 UUID.randomUUID(),
                 "Андрей",
                 "север",
