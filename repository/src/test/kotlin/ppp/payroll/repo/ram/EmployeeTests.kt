@@ -22,6 +22,7 @@ class EmployeeTests {
 
     private val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
 
+    private val payCheckRepo: MultiRepo<PayCheck> = MultiRepoBase(employeeRepo)
 
     private val petya = Employee(
             UUID.randomUUID(),
@@ -183,6 +184,20 @@ class EmployeeTests {
         wageRepo.add(wage)
         employeeRepo.remove(denis.id)
         assertThat(wageRepo.getFeatureFor(denis.id) == null)
+    }
+
+    @Test
+    fun `можно удалить работника с выплатами зарплаты (удалится отовсюду)`() {
+        val zoya = Employee(
+                UUID.randomUUID(),
+                "Зоя",
+                "далече",
+        )
+        employeeRepo.add(zoya)
+        val check = PayCheck(zoya.id, Instant.now(), 15, "выплачено в банк Голдман Сакс")
+        payCheckRepo.add(check)
+        employeeRepo.remove(zoya.id)
+        assertThat(payCheckRepo.featuresFor(zoya.id).isEmpty())
     }
 
     @Test
