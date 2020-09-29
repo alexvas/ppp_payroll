@@ -20,6 +20,10 @@ class EmployeeRepoImpl : EmployeeRepo {
         }
     }
 
+    override fun get(employeeId: UUID): Employee {
+        return employees.first { it.id == employeeId }
+    }
+
     private fun doAdd(employee: Employee) {
         require(!employees.contains(employee)) {
             "It is not allowed to add any employee to the repo twice"

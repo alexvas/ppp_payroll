@@ -8,7 +8,7 @@ import ppp.payroll.*
 import java.time.Instant
 import java.util.*
 
-class UserTests {
+class EmployeeTests {
     private val petya = Employee(
             UUID.randomUUID(),
             "Петя",
@@ -169,6 +169,22 @@ class UserTests {
         wageRepo.add(wage)
         employeeRepo.remove(denis.id)
         assertThat(wageRepo.getFeatureFor(denis.id) == null)
+    }
+
+    @Test
+    fun `успешно создаём работника`() {
+        val aleftina = Employee(
+                UUID.randomUUID(),
+                "Алефтина",
+                "налево-направо",
+
+        )
+        employeeRepo.add(aleftina)
+        assertThat(employeeRepo.hasEmployee(aleftina.id)).isTrue
+        val saved = employeeRepo.get(aleftina.id)
+        assertThat(saved.name).isEqualTo("Алефтина")
+        assertThat(saved.address).isEqualTo("налево-направо")
+
     }
 
 }

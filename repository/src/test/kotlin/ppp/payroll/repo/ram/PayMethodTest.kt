@@ -31,6 +31,7 @@ class PayMethodTest {
         employeeRepo.add(alena)
         val payMethod : PayMethod = PayMethodDirect(alena.id, "Western Union", 1122334455667788990L)
         payMethodRepo.add(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(alena.id)).isEqualTo(payMethod)
     }
 
     @Test
@@ -43,6 +44,7 @@ class PayMethodTest {
         employeeRepo.add(aksinya)
         val payMethod : PayMethod = PayMethodMail(aksinya.id, "запад")
         payMethodRepo.add(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(aksinya.id)).isEqualTo(payMethod)
     }
 
     @Test

@@ -40,8 +40,9 @@ interface EmployeeRepo {
     }
 
     fun add(employee: Employee)
-    fun allEmployees(): List<Employee>
-    fun remove(id: UUID)
     fun hasEmployee(userId: UUID): Boolean
+    fun get(employeeId: UUID): Employee
+    fun remove(id: UUID)
+    fun allEmployees(): List<Employee>
     fun addRemovalListener(removalListener: RemovalListener)
 }
