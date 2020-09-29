@@ -1,6 +1,5 @@
 package ppp.payroll
 
-import ppp.payroll.repo.EmployeeFeature
 import java.util.*
 
 interface PayMethod: EmployeeFeature {
