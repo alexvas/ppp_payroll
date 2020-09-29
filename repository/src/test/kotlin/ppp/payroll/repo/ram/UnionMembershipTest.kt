@@ -5,15 +5,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
 import ppp.payroll.EmployeeRepo
-import ppp.payroll.MonoRepo
 import ppp.payroll.UnionMembership
+import ppp.payroll.UnionMembershipRepo
 import java.util.*
 
 class UnionMembershipTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val unionMembershipRepo: MonoRepo<UnionMembership> = MonoRepoBase(employeeRepo)
+    private val unionMembershipRepo: UnionMembershipRepo = UnionMembershipRepoImpl(employeeRepo)
 
     @Test
     fun `добавим членство в профсоюзе`() {
@@ -27,6 +27,21 @@ class UnionMembershipTest {
         val charge = UnionMembership(dima.id, 44)
         unionMembershipRepo.add(charge)
         assertThat(unionMembershipRepo.getFeatureFor(dima.id)).isEqualTo(charge)
+    }
+
+    @Test
+    fun `обновим профсоюзный взнос`() {
+        val stas = Employee(
+                UUID.randomUUID(),
+                "Стас",
+                "везде",
+        )
+        employeeRepo.add(stas)
+
+        val charge = UnionMembership(stas.id, 45)
+        unionMembershipRepo.add(charge)
+        unionMembershipRepo.updateDueRate(stas.id, 13)
+        assertThat(unionMembershipRepo.getFeatureFor(stas.id)!!.dueRate).isEqualTo(13)
     }
 
     @Test
@@ -60,6 +75,15 @@ class UnionMembershipTest {
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("not found")
 
+    }
+
+    @Test
+    fun `нельзя обновить профсоюзный взнос для несуществующего работника`() {
+        Assertions.assertThatThrownBy {
+            unionMembershipRepo.updateDueRate(UUID.randomUUID(), 8)
+        }
+                .isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("no member")
     }
 
 }

@@ -41,9 +41,9 @@ class MultiRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo)
     override fun featuresFor(employeeId: UUID) = features[employeeId]?.toList() ?: emptyList()
 }
 
-class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MonoRepo<T> {
-    private val modificationLock: Any = Any()
-    private val features: MutableMap<UUID, T> = LinkedHashMap()
+open class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MonoRepo<T> {
+    internal val modificationLock: Any = Any()
+    internal val features: MutableMap<UUID, T> = LinkedHashMap()
 
     init {
         employeeRepo.addRemovalListener {
@@ -63,13 +63,28 @@ class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) 
         require(!features.containsKey(item.employeeId)) {
             "It is not allowed to add item $item to any employee twice"
         }
-        require(
-                employeeRepo.hasEmployee(item.employeeId)
-        ) {
+        require(employeeRepo.hasEmployee(item.employeeId)) {
             "Employee for item $item not found"
         }
         features[item.employeeId] = item
     }
 
     override fun getFeatureFor(employeeId: UUID): T? = features[employeeId]
+}
+
+class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo, MonoRepoBase<UnionMembership>(employeeRepo) {
+    override fun updateDueRate(employeeId: UUID, dueRate: Int) {
+        synchronized(modificationLock) {
+            doUpdateDueRate(employeeId, dueRate)
+        }
+    }
+
+    private fun doUpdateDueRate(employeeId: UUID, dueRate: Int) {
+        val membership = getFeatureFor(employeeId)
+        require(membership != null) {
+            "Employee of ID $employeeId is no member of any union"
+        }
+        features[employeeId] = membership.copy(dueRate = dueRate)
+    }
+
 }

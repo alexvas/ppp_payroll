@@ -56,3 +56,7 @@ interface EmployeeRepo {
     fun allEmployees(): List<Employee>
     fun addRemovalListener(removalListener: RemovalListener)
 }
+
+interface UnionMembershipRepo: MonoRepo<UnionMembership> {
+    fun updateDueRate(employeeId: UUID, dueRate: Int)
+}
