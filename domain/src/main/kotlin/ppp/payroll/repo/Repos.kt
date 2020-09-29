@@ -40,9 +40,17 @@ interface MonoRepo<T : EmployeeFeature> {
     fun getFeatureFor(employeeId: UUID): T?
 }
 
-class MultiRepoBase<T : EmployeeFeature> : MultiRepo<T> {
+class MultiRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MultiRepo<T> {
     private val modificationLock: Any = Any()
     private val features: MutableMap<UUID, MutableSet<T>> = LinkedHashMap()
+
+    init {
+        employeeRepo.addRemovalListener {
+            synchronized(modificationLock) {
+                features.remove(it)
+            }
+        }
+    }
 
     override fun add(feature: T) {
         synchronized(modificationLock) {
@@ -55,7 +63,7 @@ class MultiRepoBase<T : EmployeeFeature> : MultiRepo<T> {
             "It is not allowed to add any item to the repo twice"
         }
         require(
-                EmployeeRepo.hasEmployee(feature.employeeId)
+                employeeRepo.hasEmployee(feature.employeeId)
         ) {
             "Employee for item $feature not found"
         }
@@ -68,9 +76,17 @@ class MultiRepoBase<T : EmployeeFeature> : MultiRepo<T> {
     override fun featuresFor(employeeId: UUID) = features[employeeId]?.toList() ?: emptyList()
 }
 
-class MonoRepoBase<T : EmployeeFeature> : MonoRepo<T> {
+class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MonoRepo<T> {
     private val modificationLock: Any = Any()
     private val features: MutableMap<UUID, T> = LinkedHashMap()
+
+    init {
+        employeeRepo.addRemovalListener {
+            synchronized(modificationLock) {
+                features.remove(it)
+            }
+        }
+    }
 
     override fun add(feature: T) {
         synchronized(modificationLock) {
@@ -83,7 +99,7 @@ class MonoRepoBase<T : EmployeeFeature> : MonoRepo<T> {
             "It is not allowed to add item $item to any employee twice"
         }
         require(
-                EmployeeRepo.hasEmployee(item.employeeId)
+                employeeRepo.hasEmployee(item.employeeId)
         ) {
             "Employee for item $item not found"
         }
@@ -93,10 +109,10 @@ class MonoRepoBase<T : EmployeeFeature> : MonoRepo<T> {
     override fun getFeatureFor(employeeId: UUID): T? = features[employeeId]
 }
 
-val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase()
+val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(EmployeeRepo)
 
-val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase()
+val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(EmployeeRepo)
 
-val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase()
+val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(EmployeeRepo)
 
-val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase()
+val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(EmployeeRepo)

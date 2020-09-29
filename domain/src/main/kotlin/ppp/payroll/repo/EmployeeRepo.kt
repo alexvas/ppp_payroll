@@ -5,10 +5,15 @@ import java.util.*
 import kotlin.collections.LinkedHashSet
 
 object EmployeeRepo {
+    fun interface RemovalListener {
+        fun removed(employeeId: UUID)
+    }
 
     private val employees: MutableSet<Employee> = LinkedHashSet()
 
     private val modificationLock: Any = Any()
+
+    private val removalListeners: MutableList<RemovalListener> = mutableListOf()
 
     fun add(employee: Employee) {
         synchronized(modificationLock) {
@@ -32,21 +37,13 @@ object EmployeeRepo {
     }
 
     private fun doRemove(id: UUID) {
-        require(timeCardRepo.featuresFor(id).isEmpty()) {
-            "It is not allowed to remove employee with id $id: he or she has time card(s)"
-        }
-        require(salesReceiptRepo.featuresFor(id).isEmpty()) {
-            "It is not allowed to remove employee with id $id: he or she has sales receipt(s)"
-        }
-        require(unionChargeRepo.getFeatureFor(id) == null) {
-            "It is not allowed to remove employee with id $id: he or she has union charge"
-        }
-        require(payMethodRepo.getFeatureFor(id) == null) {
-            "It is not allowed to remove employee with id $id: he or she has pay method"
-        }
-
         employees.removeIf { id == it.id }
+        removalListeners.forEach { it.removed(id) }
     }
 
     fun hasEmployee(userId: UUID): Boolean = employees.any { it.id == userId }
+
+    fun addRemovalListener(removalListener: RemovalListener) {
+        removalListeners += removalListener
+    }
 }

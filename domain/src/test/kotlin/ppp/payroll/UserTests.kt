@@ -198,7 +198,7 @@ class UserTests {
     }
 
     @Test
-    fun `нельзя удалить работника с учтённым временем`() {
+    fun `можно удалить работника с учтённым временем`() {
         val ulyana: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
                 "Ульяна",
@@ -209,15 +209,12 @@ class UserTests {
         EmployeeRepo.add(ulyana)
         val card = TimeCard(ulyana.id, Instant.now(), 2)
         timeCardRepo.add(card)
-        assertThatThrownBy {
-            EmployeeRepo.remove(ulyana.id)
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("has time card(s)")
+        EmployeeRepo.remove(ulyana.id)
+        assertThat(timeCardRepo.featuresFor(ulyana.id).isEmpty())
     }
 
     @Test
-    fun `нельзя удалить работника с продажами`() {
+    fun `можно удалить работника с продажами`() {
         val efim: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
                 "Ефим",
@@ -228,15 +225,12 @@ class UserTests {
         EmployeeRepo.add(efim)
         val receipt = SalesReceipt(efim.id, Instant.now(), 700)
         salesReceiptRepo.add(receipt)
-        assertThatThrownBy {
-            EmployeeRepo.remove(efim.id)
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("has sales receipt(s)")
+        EmployeeRepo.remove(efim.id)
+        assertThat(salesReceiptRepo.featuresFor(efim.id).isEmpty())
     }
 
     @Test
-    fun `нельзя удалить работника с профсоюзным взносом`() {
+    fun `можно удалить работника с профсоюзным взносом`() {
         val igor: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
                 "Игорь",
@@ -247,15 +241,12 @@ class UserTests {
         EmployeeRepo.add(igor)
         val charge = UnionCharge(igor.id, 1700)
         unionChargeRepo.add(charge)
-        assertThatThrownBy {
-            EmployeeRepo.remove(igor.id)
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("has union charge")
+        EmployeeRepo.remove(igor.id)
+        assertThat(unionChargeRepo.getFeatureFor(igor.id) == null)
     }
 
     @Test
-    fun `нельзя удалить работника с выплатами`() {
+    fun `можно удалить работника с выплатами`() {
         val slavik: Employee = EmployeeFactory.createCommissionedEmployee(
                 UUID.randomUUID(),
                 "Вячеслав",
@@ -266,11 +257,8 @@ class UserTests {
         EmployeeRepo.add(slavik)
         val payMethod = PayMethodHold(slavik.id)
         payMethodRepo.add(payMethod)
-        assertThatThrownBy {
-            EmployeeRepo.remove(slavik.id)
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("has pay method")
+        EmployeeRepo.remove(slavik.id)
+        assertThat(payMethodRepo.getFeatureFor(slavik.id) == null)
     }
 
 }
