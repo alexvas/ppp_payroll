@@ -39,10 +39,20 @@ interface EmployeeRepo {
         fun removed(employeeId: UUID)
     }
 
+    fun interface Updater {
+        fun update(original: Employee): Employee
+    }
+
     fun add(employee: Employee)
-    fun hasEmployee(userId: UUID): Boolean
-    fun get(employeeId: UUID): Employee
-    fun remove(id: UUID)
+    fun hasEmployee(employeeId: UUID): Boolean
+    fun get(employeeId: UUID): Employee?
+
+    /**
+     * Updates any employee field except his or her ID. The employee must be already saved in the repository.
+     */
+    fun update(employeeId: UUID, updater: Updater)
+
+    fun remove(employeeId: UUID)
     fun allEmployees(): List<Employee>
     fun addRemovalListener(removalListener: RemovalListener)
 }

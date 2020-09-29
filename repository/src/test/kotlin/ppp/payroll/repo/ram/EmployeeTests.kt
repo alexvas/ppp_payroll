@@ -210,10 +210,42 @@ class EmployeeTests {
         )
         employeeRepo.add(aleftina)
         assertThat(employeeRepo.hasEmployee(aleftina.id)).isTrue
-        val saved = employeeRepo.get(aleftina.id)
+        val saved = employeeRepo.get(aleftina.id)!!
         assertThat(saved.name).isEqualTo("Алефтина")
         assertThat(saved.address).isEqualTo("налево-направо")
 
+    }
+
+    @Test
+    fun `можно переименовать работника`() {
+        val evgeniya = Employee(
+                UUID.randomUUID(),
+                "Евгения Птичкина",
+                "налево-направо",
+        )
+        employeeRepo.add(evgeniya)
+        employeeRepo.update(evgeniya.id) {
+            it.copy(name = "Евгения Пяткина")
+        }
+        val saved = employeeRepo.get(evgeniya.id)!!
+        assertThat(saved.name).contains("Пяткина")
+        assertThat(saved.address).isEqualTo(evgeniya.address)
+    }
+
+    @Test
+    fun `можно поменять адрес у работника`() {
+        val naum = Employee(
+                UUID.randomUUID(),
+                "Наум",
+                "налево-направо",
+        )
+        employeeRepo.add(naum)
+        employeeRepo.update(naum.id) {
+            it.copy(address = "вверх-вниз")
+        }
+        val saved = employeeRepo.get(naum.id)!!
+        assertThat(saved.name).isEqualTo(naum.name)
+        assertThat(saved.address).isEqualTo("вверх-вниз")
     }
 
 }
