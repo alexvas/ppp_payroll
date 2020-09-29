@@ -1,10 +1,9 @@
-package ppp.payroll
+package ppp.payroll.repo.ram
 
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.employeeRepo
-import ppp.payroll.repo.payMethodRepo
+import ppp.payroll.*
 import java.util.*
 
 class PayMethodTest {

@@ -33,3 +33,15 @@ interface MonoRepo<T : EmployeeFeature> {
 
     fun getFeatureFor(employeeId: UUID): T?
 }
+
+interface EmployeeRepo {
+    fun interface RemovalListener {
+        fun removed(employeeId: UUID)
+    }
+
+    fun add(employee: Employee)
+    fun allEmployees(): List<Employee>
+    fun remove(id: UUID)
+    fun hasEmployee(userId: UUID): Boolean
+    fun addRemovalListener(removalListener: RemovalListener)
+}

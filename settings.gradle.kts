@@ -9,6 +9,7 @@ pluginManagement {
 }
 
 include(
-        "domain"
+        "domain",
+        "repository"
 )
 

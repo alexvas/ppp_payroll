@@ -1,21 +1,10 @@
-package ppp.payroll.repo
+package ppp.payroll.repo.ram
 
 import ppp.payroll.Employee
+import ppp.payroll.EmployeeRepo
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
-
-interface EmployeeRepo {
-    fun interface RemovalListener {
-        fun removed(employeeId: UUID)
-    }
-
-    fun add(employee: Employee)
-    fun allEmployees(): List<Employee>
-    fun remove(id: UUID)
-    fun hasEmployee(userId: UUID): Boolean
-    fun addRemovalListener(removalListener: RemovalListener)
-}
 
 class EmployeeRepoImpl : EmployeeRepo {
 

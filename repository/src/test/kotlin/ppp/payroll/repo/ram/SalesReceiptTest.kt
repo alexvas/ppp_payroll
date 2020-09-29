@@ -1,11 +1,12 @@
-package ppp.payroll
+package ppp.payroll.repo.ram
 
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import ppp.payroll.repo.employeeRepo
-import ppp.payroll.repo.salesReceiptRepo
+import ppp.payroll.Employee
+import ppp.payroll.EmployeeFactory
+import ppp.payroll.SalesReceipt
 import java.time.Instant
 import java.util.*
 
