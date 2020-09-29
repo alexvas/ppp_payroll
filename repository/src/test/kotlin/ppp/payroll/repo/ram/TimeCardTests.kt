@@ -17,30 +17,26 @@ class TimeCardTests {
 
     private val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(employeeRepo)
 
-    private val zahar = Employee(
-            UUID.randomUUID(),
-            "Захар",
-            "где-то"
-    )
+    private val employee = Employee()
 
     @BeforeAll
     fun setup() {
-        employeeRepo.add(zahar)
-        val card = TimeCard(zahar.id, Instant.now(), 12)
+        employeeRepo.add(employee)
+        val card = TimeCard(employee.id, Instant.now(), 12)
         timeCardRepo.add(card)
     }
 
     @Test
     fun `добавим отработанное время`() {
-        val card = TimeCard(zahar.id, Instant.now().plusMillis(1000), 12)
+        val card = TimeCard(employee.id, Instant.now().plusMillis(1000), 12)
         timeCardRepo.add(card)
         assertThat(timeCardRepo.allFeatures()).contains(card)
-        assertThat(timeCardRepo.featuresFor(zahar.id)).contains(card)
+        assertThat(timeCardRepo.featuresFor(employee.id)).contains(card)
     }
 
     @Test
     fun `отработанное время нельзя учесть дважды`() {
-        val card = TimeCard(zahar.id, Instant.now().plusMillis(2000), 12)
+        val card = TimeCard(employee.id, Instant.now().plusMillis(2000), 12)
         timeCardRepo.add(card)
         Assertions.assertThatThrownBy {
             timeCardRepo.add(card)

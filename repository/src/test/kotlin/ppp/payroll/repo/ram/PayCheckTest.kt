@@ -17,30 +17,26 @@ class PayCheckTest {
 
     private val payCheckRepo: MultiRepo<PayCheck> = MultiRepoBase(employeeRepo)
 
-    private val viktor = Employee(
-            UUID.randomUUID(),
-            "Виктор",
-            "на углу",
-    )
+    private val employee = Employee()
 
     @BeforeAll
     fun setup() {
-        employeeRepo.add(viktor)
-        val receipt = PayCheck(viktor.id, Instant.now(), 230, "выплачено в банк J.P.Morgan")
+        employeeRepo.add(employee)
+        val receipt = PayCheck(employee.id, Instant.now(), 230, "выплачено в банк J.P.Morgan")
         payCheckRepo.add(receipt)
     }
 
     @Test
     fun `добавим выплату зарплаты`() {
-        val receipt = PayCheck(viktor.id, Instant.now(), 100, "хранится у бухгалтера")
+        val receipt = PayCheck(employee.id, Instant.now(), 100, "хранится у бухгалтера")
         payCheckRepo.add(receipt)
         assertThat(payCheckRepo.allFeatures()).contains(receipt)
-        assertThat(payCheckRepo.featuresFor(viktor.id)).contains(receipt)
+        assertThat(payCheckRepo.featuresFor(employee.id)).contains(receipt)
     }
 
     @Test
     fun `конкретную выплату зарплаты нельзя учесть дважды`() {
-        val receipt = PayCheck(viktor.id, Instant.now().plusMillis(150), 12, "отослано на домашний адрес")
+        val receipt = PayCheck(employee.id, Instant.now().plusMillis(150), 12, "отослано на домашний адрес")
         payCheckRepo.add(receipt)
         Assertions.assertThatThrownBy {
             payCheckRepo.add(receipt)

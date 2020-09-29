@@ -29,9 +29,18 @@ interface MultiRepo<T : EmployeeFeature> {
  */
 interface MonoRepo<T : EmployeeFeature> {
 
+    fun interface Updater<F> {
+        fun update(original: F): F
+    }
+
     fun add(feature: T)
 
     fun getFeatureFor(employeeId: UUID): T?
+
+    /**
+     * Updates any feature field except it's ID. The feature must be already saved in the repository.
+     */
+    fun update(employeeId: UUID, updater: Updater<T>)
 }
 
 interface EmployeeRepo {
@@ -39,18 +48,9 @@ interface EmployeeRepo {
         fun removed(employeeId: UUID)
     }
 
-    fun interface Updater {
-        fun update(original: Employee): Employee
-    }
-
     fun add(employee: Employee)
     fun hasEmployee(employeeId: UUID): Boolean
     fun get(employeeId: UUID): Employee?
-
-    /**
-     * Updates any employee field except his or her ID. The employee must be already saved in the repository.
-     */
-    fun update(employeeId: UUID, updater: Updater)
 
     fun remove(employeeId: UUID)
     fun allEmployees(): List<Employee>

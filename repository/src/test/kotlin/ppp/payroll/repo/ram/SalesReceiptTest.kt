@@ -17,30 +17,26 @@ class SalesReceiptTest {
 
     private val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(employeeRepo)
 
-    private val sonya = Employee(
-            UUID.randomUUID(),
-            "Соня",
-            "везде",
-    )
+    private val employee = Employee()
 
     @BeforeAll
     fun setup() {
-        employeeRepo.add(sonya)
-        val receipt = SalesReceipt(sonya.id, Instant.now(), 200)
+        employeeRepo.add(employee)
+        val receipt = SalesReceipt(employee.id, Instant.now(), 200)
         salesReceiptRepo.add(receipt)
     }
 
     @Test
     fun `добавим продажи`() {
-        val receipt = SalesReceipt(sonya.id, Instant.now(), 100)
+        val receipt = SalesReceipt(employee.id, Instant.now(), 100)
         salesReceiptRepo.add(receipt)
         assertThat(salesReceiptRepo.allFeatures()).contains(receipt)
-        assertThat(salesReceiptRepo.featuresFor(sonya.id)).contains(receipt)
+        assertThat(salesReceiptRepo.featuresFor(employee.id)).contains(receipt)
     }
 
     @Test
     fun `конкретную продажу нельзя учесть дважды`() {
-        val receipt = SalesReceipt(sonya.id, Instant.now().plusMillis(150), 12)
+        val receipt = SalesReceipt(employee.id, Instant.now().plusMillis(150), 12)
         salesReceiptRepo.add(receipt)
         Assertions.assertThatThrownBy {
             salesReceiptRepo.add(receipt)

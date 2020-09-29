@@ -17,61 +17,45 @@ class UnionMembershipTest {
 
     @Test
     fun `добавим членство в профсоюзе`() {
-        val dima = Employee(
-                UUID.randomUUID(),
-                "Дмитрий",
-                "там-то",
-        )
-        employeeRepo.add(dima)
+        val employee = Employee()
+        employeeRepo.add(employee)
 
-        val membership = UnionMembership(dima.id, 44)
+        val membership = UnionMembership(employee.id, 44)
         unionMembershipRepo.add(membership)
-        assertThat(unionMembershipRepo.getFeatureFor(dima.id)).isEqualTo(membership)
+        assertThat(unionMembershipRepo.getFeatureFor(employee.id)).isEqualTo(membership)
     }
 
     @Test
     fun `обновим профсоюзный взнос`() {
-        val stas = Employee(
-                UUID.randomUUID(),
-                "Стас",
-                "везде",
-        )
-        employeeRepo.add(stas)
+        val employee = Employee()
+        employeeRepo.add(employee)
 
-        val membership = UnionMembership(stas.id, 45)
+        val membership = UnionMembership(employee.id, 45)
         unionMembershipRepo.add(membership)
-        unionMembershipRepo.updateDueRate(stas.id, 13)
-        assertThat(unionMembershipRepo.getFeatureFor(stas.id)!!.dueRate).isEqualTo(13)
+        unionMembershipRepo.updateDueRate(employee.id, 13)
+        assertThat(unionMembershipRepo.getFeatureFor(employee.id)!!.dueRate).isEqualTo(13)
     }
 
     @Test
     fun `исключаем из профсоюза`() {
-        val anfisa = Employee(
-                UUID.randomUUID(),
-                "Анфиса",
-                "там-то",
-        )
-        employeeRepo.add(anfisa)
+        val employee = Employee()
+        employeeRepo.add(employee)
 
-        val membership = UnionMembership(anfisa.id, 315)
+        val membership = UnionMembership(employee.id, 315)
         unionMembershipRepo.add(membership)
-        unionMembershipRepo.noMember(anfisa.id)
-        assertThat(unionMembershipRepo.getFeatureFor(anfisa.id)).isNull()
+        unionMembershipRepo.noMember(employee.id)
+        assertThat(unionMembershipRepo.getFeatureFor(employee.id)).isNull()
     }
 
     @Test
-    fun `у работника нельзя вычесть два профсоюзных взноса`() {
-        val andrei = Employee(
-                UUID.randomUUID(),
-                "Андрей",
-                "север",
-        )
-        employeeRepo.add(andrei)
+    fun `работнику нельзя выплачивать два профсоюзных взноса`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
 
-        val membership1 = UnionMembership(andrei.id, 24)
+        val membership1 = UnionMembership(employee.id, 24)
         unionMembershipRepo.add(membership1)
 
-        val membership2 = UnionMembership(andrei.id, 15)
+        val membership2 = UnionMembership(employee.id, 15)
 
         Assertions.assertThatThrownBy {
             unionMembershipRepo.add(membership2)
@@ -81,7 +65,7 @@ class UnionMembershipTest {
     }
 
     @Test
-    fun `нельзя зарегистрировать вычет профсоюзного взноса для несуществующего работника`() {
+    fun `нельзя зарегистрировать профсоюзный взнос для несуществующего работника`() {
         val membership = UnionMembership(UUID.randomUUID(), 3)
 
         Assertions.assertThatThrownBy {
@@ -98,7 +82,7 @@ class UnionMembershipTest {
             unionMembershipRepo.updateDueRate(UUID.randomUUID(), 8)
         }
                 .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("no member")
+                .hasMessageContaining("not in the repo")
     }
 
 }

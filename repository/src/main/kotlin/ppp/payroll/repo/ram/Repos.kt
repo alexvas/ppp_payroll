@@ -70,21 +70,31 @@ open class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeR
     }
 
     override fun getFeatureFor(employeeId: UUID): T? = features[employeeId]
+
+    override fun update(employeeId: UUID, updater: MonoRepo.Updater<T>) {
+        synchronized(modificationLock) {
+            doUpdate(employeeId, updater)
+        }
+    }
+
+    private fun doUpdate(employeeId: UUID, updater: MonoRepo.Updater<T>) {
+        val original = features[employeeId]
+        require(original != null) {
+            "It is not allowed to update feature not in the repo"
+        }
+        val updated = updater.update(original)
+        check(updated.employeeId == original.employeeId) {
+            "It is not allowed to change employee id while updating"
+        }
+        features[employeeId] = updated
+    }
 }
 
 class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo, MonoRepoBase<UnionMembership>(employeeRepo) {
     override fun updateDueRate(employeeId: UUID, dueRate: Int) {
-        synchronized(modificationLock) {
-            doUpdateDueRate(employeeId, dueRate)
+        update(employeeId) {
+            it.copy(dueRate = dueRate)
         }
-    }
-
-    private fun doUpdateDueRate(employeeId: UUID, dueRate: Int) {
-        val membership = getFeatureFor(employeeId)
-        require(membership != null) {
-            "Employee of ID $employeeId is no member of any union"
-        }
-        features[employeeId] = membership.copy(dueRate = dueRate)
     }
 
     override fun noMember(employeeId: UUID) {

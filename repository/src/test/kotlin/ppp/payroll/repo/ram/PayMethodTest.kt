@@ -14,55 +14,39 @@ class PayMethodTest {
 
     @Test
     fun `добавляем Hold`() {
-        val zina = Employee(
-                UUID.randomUUID(),
-                "Зина",
-                "юг",
-        )
-        employeeRepo.add(zina)
-        val payMethod : PayMethod = PayMethodHold(zina.id)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val payMethod : PayMethod = PayMethodHold(employee.id)
         payMethodRepo.add(payMethod)
-        assertThat(payMethodRepo.getFeatureFor(zina.id)).isEqualTo(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(payMethod)
     }
 
     @Test
     fun `добавляем Direct`() {
-        val alena = Employee(
-                UUID.randomUUID(),
-                "Алёна",
-                "восток",
-        )
-        employeeRepo.add(alena)
-        val payMethod : PayMethod = PayMethodDirect(alena.id, "Western Union", 1122334455667788990L)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val payMethod : PayMethod = PayMethodDirect(employee.id, "Western Union", 1122334455667788990L)
         payMethodRepo.add(payMethod)
-        assertThat(payMethodRepo.getFeatureFor(alena.id)).isEqualTo(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(payMethod)
     }
 
     @Test
     fun `добавляем Mail`() {
-        val aksinya = Employee(
-                UUID.randomUUID(),
-                "Аксинья",
-                "запад",
-        )
-        employeeRepo.add(aksinya)
-        val payMethod : PayMethod = PayMethodMail(aksinya.id, "запад")
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val payMethod : PayMethod = PayMethodMail(employee.id, "запад")
         payMethodRepo.add(payMethod)
-        assertThat(payMethodRepo.getFeatureFor(aksinya.id)).isEqualTo(payMethod)
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(payMethod)
     }
 
     @Test
     fun `работнику нельзя заплатить дважды`() {
-        val semyon = Employee(
-                UUID.randomUUID(),
-                "Семён",
-                "северо-восток",
-        )
-        employeeRepo.add(semyon)
-        val payMethod1 : PayMethod = PayMethodMail(semyon.id, "северо-восток")
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val payMethod1 : PayMethod = PayMethodMail(employee.id, "северо-восток")
         payMethodRepo.add(payMethod1)
 
-        val payMethod2 : PayMethod = PayMethodHold(semyon.id)
+        val payMethod2 : PayMethod = PayMethodHold(employee.id)
 
         Assertions.assertThatThrownBy {
             payMethodRepo.add(payMethod2)

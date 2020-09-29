@@ -30,21 +30,6 @@ class EmployeeRepoImpl : EmployeeRepo {
         employees[employee.id] = employee
     }
 
-    override fun update(employeeId: UUID, updater: EmployeeRepo.Updater) {
-        synchronized(modificationLock) {
-            doUpdate(employeeId, updater)
-        }
-    }
-
-    private fun doUpdate(employeeId: UUID, updater: EmployeeRepo.Updater) {
-        val original = employees[employeeId]
-        require(original != null) {
-            "It is not allowed to update employee not in the repo"
-        }
-        val updated = updater.update(original).copy(id = employeeId)
-        employees[employeeId] = updated
-    }
-
     override fun allEmployees() = employees.values.toList()
 
     override fun remove(employeeId: UUID) {

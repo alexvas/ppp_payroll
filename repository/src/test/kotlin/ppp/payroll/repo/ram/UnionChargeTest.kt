@@ -16,30 +16,26 @@ class UnionChargeTest {
 
     private val unionChargeRepo: MultiRepo<UnionCharge> = MultiRepoBase(employeeRepo)
 
-    private val roman = Employee(
-            UUID.randomUUID(),
-            "Рома",
-            "в доме",
-    )
+    private val employee = Employee()
 
     @BeforeAll
     fun setup() {
-        employeeRepo.add(roman)
-        val charge = UnionCharge(roman.id, 32)
+        employeeRepo.add(employee)
+        val charge = UnionCharge(employee.id, 32)
         unionChargeRepo.add(charge)
     }
 
     @Test
     fun `добавим профсоюзный сбор`() {
-        val charge = UnionCharge(roman.id, 15)
+        val charge = UnionCharge(employee.id, 15)
         unionChargeRepo.add(charge)
         assertThat(unionChargeRepo.allFeatures()).contains(charge)
-        assertThat(unionChargeRepo.featuresFor(roman.id)).contains(charge)
+        assertThat(unionChargeRepo.featuresFor(employee.id)).contains(charge)
     }
 
     @Test
     fun `конкретный профсоюзный сбор нельзя учесть дважды`() {
-        val charge = UnionCharge(roman.id, 11)
+        val charge = UnionCharge(employee.id, 11)
         unionChargeRepo.add(charge)
         Assertions.assertThatThrownBy {
             unionChargeRepo.add(charge)

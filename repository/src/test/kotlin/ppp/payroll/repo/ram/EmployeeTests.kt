@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.*
 import java.time.Instant
-import java.util.*
 
 class EmployeeTests {
 
@@ -24,17 +23,11 @@ class EmployeeTests {
 
     private val payCheckRepo: MultiRepo<PayCheck> = MultiRepoBase(employeeRepo)
 
-    private val petya = Employee(
-            UUID.randomUUID(),
-            "Петя",
-            "где-то",
-    )
+    private val detailRepo: MonoRepo<EmployeeDetail> = MonoRepoBase(employeeRepo)
 
-    private val vasya = Employee(
-            UUID.randomUUID(),
-            "Вася",
-            "там-то",
-    )
+    private val petya = Employee()
+
+    private val vasya = Employee()
 
     @BeforeAll
     fun setup() {
@@ -47,55 +40,21 @@ class EmployeeTests {
 
         val initialSize = employeeRepo.allEmployees().size
 
-        val ulya = Employee(
-                UUID.randomUUID(),
-                "Юля",
-                "не здесь",
-        )
+        val employee = Employee()
 
-        employeeRepo.add(ulya)
+        employeeRepo.add(employee)
 
         assertThat(employeeRepo.allEmployees()).hasSize(initialSize + 1)
-        assertThat(employeeRepo.allEmployees()).contains(petya, vasya, ulya)
-    }
-
-    @Test
-    fun `нельзя создать работника без имени`() {
-        assertThatThrownBy {
-            Employee(
-                    UUID.randomUUID(),
-                    "",
-                    "где-то",
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("name")
-    }
-
-    @Test
-    fun `нельзя создать работника без адреса`() {
-        assertThatThrownBy {
-            Employee(
-                    UUID.randomUUID(),
-                    "выаывавы",
-                    "",
-            )
-        }
-                .isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("address")
+        assertThat(employeeRepo.allEmployees()).contains(petya, vasya, employee)
     }
 
     @Test
     fun `нельзя дважды добавить работника в репозиторий`() {
-        val zhenya = Employee(
-                UUID.randomUUID(),
-                "Женя",
-                "опять не здесь",
-        )
+        val employee = Employee()
 
-        employeeRepo.add(zhenya)
+        employeeRepo.add(employee)
         assertThatThrownBy {
-            employeeRepo.add(zhenya)
+            employeeRepo.add(employee)
         }
                 .isInstanceOf(RuntimeException::class.java)
                 .hasMessageContaining("twice")
@@ -103,149 +62,92 @@ class EmployeeTests {
 
     @Test
     fun `удаляем работника из репозитория`() {
-        val fedya = Employee(
-                UUID.randomUUID(),
-                "Федя",
-                "ччч",
-        )
+        val employee = Employee()
 
-        employeeRepo.add(fedya)
-        employeeRepo.remove(fedya.id)
+        employeeRepo.add(employee)
+        employeeRepo.remove(employee.id)
 
         assertThat(employeeRepo.allEmployees())
-                .doesNotContainSequence(fedya)
+                .doesNotContainSequence(employee)
     }
 
     @Test
     fun `можно удалить работника с учтённым временем (удалится отовсюду)`() {
-        val ulyana = Employee(
-                UUID.randomUUID(),
-                "Ульяна",
-                "ччч",
-        )
-        employeeRepo.add(ulyana)
-        val card = TimeCard(ulyana.id, Instant.now(), 2)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val card = TimeCard(employee.id, Instant.now(), 2)
         timeCardRepo.add(card)
-        employeeRepo.remove(ulyana.id)
-        assertThat(timeCardRepo.featuresFor(ulyana.id).isEmpty())
+        employeeRepo.remove(employee.id)
+        assertThat(timeCardRepo.featuresFor(employee.id).isEmpty())
     }
 
     @Test
     fun `можно удалить работника с продажами (удалится отовсюду)`() {
-        val efim = Employee(
-                UUID.randomUUID(),
-                "Ефим",
-                "ччч",
-        )
-        employeeRepo.add(efim)
-        val receipt = SalesReceipt(efim.id, Instant.now(), 700)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val receipt = SalesReceipt(employee.id, Instant.now(), 700)
         salesReceiptRepo.add(receipt)
-        employeeRepo.remove(efim.id)
-        assertThat(salesReceiptRepo.featuresFor(efim.id).isEmpty())
+        employeeRepo.remove(employee.id)
+        assertThat(salesReceiptRepo.featuresFor(employee.id).isEmpty())
     }
 
     @Test
     fun `можно удалить работника с профсоюзным взносом (удалится отовсюду)`() {
-        val igor = Employee(
-                UUID.randomUUID(),
-                "Игорь",
-                "ччч",
-        )
-        employeeRepo.add(igor)
-        val charge = UnionCharge(igor.id, 1700)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val charge = UnionCharge(employee.id, 1700)
         unionChargeRepo.add(charge)
-        employeeRepo.remove(igor.id)
-        assertThat(unionChargeRepo.getFeatureFor(igor.id) == null)
+        employeeRepo.remove(employee.id)
+        assertThat(unionChargeRepo.getFeatureFor(employee.id) == null)
     }
 
     @Test
     fun `можно удалить работника с выплатами (удалится отовсюду)`() {
-        val slavik = Employee(
-                UUID.randomUUID(),
-                "Вячеслав",
-                "бгг",
-        )
-        employeeRepo.add(slavik)
-        val payMethod = PayMethodHold(slavik.id)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val payMethod = PayMethodHold(employee.id)
         payMethodRepo.add(payMethod)
-        employeeRepo.remove(slavik.id)
-        assertThat(payMethodRepo.getFeatureFor(slavik.id) == null)
+        employeeRepo.remove(employee.id)
+        assertThat(payMethodRepo.getFeatureFor(employee.id) == null)
     }
 
     @Test
     fun `можно удалить работника с зарплатой (удалится отовсюду)`() {
-        val denis = Employee(
-                UUID.randomUUID(),
-                "Денис",
-                "офф",
-        )
-        employeeRepo.add(denis)
-        val wage = FlatMonthlySalary(denis.id, 15)
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val wage = FlatMonthlySalary(employee.id, 15)
         wageRepo.add(wage)
-        employeeRepo.remove(denis.id)
-        assertThat(wageRepo.getFeatureFor(denis.id) == null)
+        employeeRepo.remove(employee.id)
+        assertThat(wageRepo.getFeatureFor(employee.id) == null)
     }
 
     @Test
     fun `можно удалить работника с выплатами зарплаты (удалится отовсюду)`() {
-        val zoya = Employee(
-                UUID.randomUUID(),
-                "Зоя",
-                "далече",
-        )
-        employeeRepo.add(zoya)
-        val check = PayCheck(zoya.id, Instant.now(), 15, "выплачено в банк Голдман Сакс")
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val check = PayCheck(employee.id, Instant.now(), 15, "выплачено в банк Голдман Сакс")
         payCheckRepo.add(check)
-        employeeRepo.remove(zoya.id)
-        assertThat(payCheckRepo.featuresFor(zoya.id).isEmpty())
+        employeeRepo.remove(employee.id)
+        assertThat(payCheckRepo.featuresFor(employee.id).isEmpty())
+    }
+
+    @Test
+    fun `можно удалить работника со сведениями о нём (удалится вместе со сведениями)`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val detail = EmployeeDetail(employee.id, "Артур", "поблизости")
+        detailRepo.add(detail)
+        employeeRepo.remove(employee.id)
+        assertThat(detailRepo.getFeatureFor(employee.id) == null)
     }
 
     @Test
     fun `успешно создаём работника`() {
-        val aleftina = Employee(
-                UUID.randomUUID(),
-                "Алефтина",
-                "налево-направо",
-
-        )
-        employeeRepo.add(aleftina)
-        assertThat(employeeRepo.hasEmployee(aleftina.id)).isTrue
-        val saved = employeeRepo.get(aleftina.id)!!
-        assertThat(saved.name).isEqualTo("Алефтина")
-        assertThat(saved.address).isEqualTo("налево-направо")
-
-    }
-
-    @Test
-    fun `можно переименовать работника`() {
-        val evgeniya = Employee(
-                UUID.randomUUID(),
-                "Евгения Птичкина",
-                "налево-направо",
-        )
-        employeeRepo.add(evgeniya)
-        employeeRepo.update(evgeniya.id) {
-            it.copy(name = "Евгения Пяткина")
-        }
-        val saved = employeeRepo.get(evgeniya.id)!!
-        assertThat(saved.name).contains("Пяткина")
-        assertThat(saved.address).isEqualTo(evgeniya.address)
-    }
-
-    @Test
-    fun `можно поменять адрес у работника`() {
-        val naum = Employee(
-                UUID.randomUUID(),
-                "Наум",
-                "налево-направо",
-        )
-        employeeRepo.add(naum)
-        employeeRepo.update(naum.id) {
-            it.copy(address = "вверх-вниз")
-        }
-        val saved = employeeRepo.get(naum.id)!!
-        assertThat(saved.name).isEqualTo(naum.name)
-        assertThat(saved.address).isEqualTo("вверх-вниз")
+        val employee = Employee()
+        employeeRepo.add(employee)
+        assertThat(employeeRepo.hasEmployee(employee.id)).isTrue
+        val saved = employeeRepo.get(employee.id)!!
+        assertThat(saved).isNotNull
     }
 
 }

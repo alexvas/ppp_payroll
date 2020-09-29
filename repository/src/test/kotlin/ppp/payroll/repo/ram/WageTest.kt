@@ -15,18 +15,14 @@ class WageTest {
 
     @Test
     fun `создаём работника с почасовой ставкой`() {
-        val artur = Employee(
-                UUID.randomUUID(),
-                "Артур",
-                "где-то",
-        )
-        employeeRepo.add(artur)
+        val employee = Employee()
+        employeeRepo.add(employee)
         val wage: Wage = HourlyRate(
-                artur.id,
+                employee.id,
                 100,
         )
         wageRepo.add(wage)
-        val savedWage = wageRepo.getFeatureFor(artur.id)
+        val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.HOURLY_RATE)
         assertThat((savedWage as HourlyRate).hourlyRate).isEqualTo(100)
@@ -34,18 +30,14 @@ class WageTest {
 
     @Test
     fun `создаём работника с постоянной зарплатой`() {
-        val onufriy = Employee(
-                UUID.randomUUID(),
-                "Онуфрий",
-                "где-то",
-        )
-        employeeRepo.add(onufriy)
+        val employee = Employee()
+        employeeRepo.add(employee)
         val wage: Wage = FlatMonthlySalary(
-                onufriy.id,
+                employee.id,
                 120,
         )
         wageRepo.add(wage)
-        val savedWage = wageRepo.getFeatureFor(onufriy.id)
+        val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.FLAT_MONTHLY_SALARY)
         assertThat((savedWage as FlatMonthlySalary).monthlySalary).isEqualTo(120)
@@ -53,19 +45,15 @@ class WageTest {
 
     @Test
     fun `создаём работника с процентной выплатой`() {
-        val epifan = Employee(
-                UUID.randomUUID(),
-                "Епифан",
-                "где-то",
-        )
-        employeeRepo.add(epifan)
+        val employee = Employee()
+        employeeRepo.add(employee)
         val wage: Wage = Commission(
-                epifan.id,
+                employee.id,
                 8,
                 12.0
         )
         wageRepo.add(wage)
-        val savedWage = wageRepo.getFeatureFor(epifan.id)
+        val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.COMMISSION)
         val commission = savedWage as Commission
