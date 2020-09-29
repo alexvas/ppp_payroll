@@ -66,5 +66,54 @@ class PayMethodTest {
                 .hasMessageContaining("not found")
     }
 
+    @Test
+    fun `можем поменять выплаты на Direct`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val hold : PayMethod = PayMethodHold(employee.id)
+        payMethodRepo.add(hold)
+        val direct: PayMethod = PayMethodDirect(
+                employee.id,
+                "ЦБ РФ",
+                332211
+        )
+        payMethodRepo.update(employee.id) {
+            direct
+        }
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(direct)
+    }
+
+    @Test
+    fun `можем поменять выплаты на Mail`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val hold : PayMethod = PayMethodHold(employee.id)
+        payMethodRepo.add(hold)
+        val mail: PayMethod = PayMethodMail(
+                employee.id,
+                "туда-туда",
+        )
+        payMethodRepo.update(employee.id) {
+            mail
+        }
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(mail)
+    }
+
+    @Test
+    fun `можем поменять выплаты на Hold`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val mail: PayMethod = PayMethodMail(
+                employee.id,
+                "туда-туда",
+        )
+        payMethodRepo.add(mail)
+        val hold : PayMethod = PayMethodHold(employee.id)
+        payMethodRepo.update(employee.id) {
+            hold
+        }
+        assertThat(payMethodRepo.getFeatureFor(employee.id)).isEqualTo(hold)
+    }
+
 
 }
