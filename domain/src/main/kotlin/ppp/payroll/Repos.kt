@@ -57,7 +57,15 @@ interface EmployeeRepo {
     fun addRemovalListener(removalListener: RemovalListener)
 }
 
-interface UnionMembershipRepo: MonoRepo<UnionMembership> {
+interface EmployeeDetailRepo : MonoRepo<EmployeeDetail>
+interface TimeCardRepo : MultiRepo<TimeCard>
+interface SalesReceiptRepo : MultiRepo<SalesReceipt>
+interface UnionChargeRepo : MultiRepo<UnionCharge>
+interface PayMethodRepo : MonoRepo<PayMethod>
+interface WageRepo : MonoRepo<Wage>
+interface PayCheckRepo : MultiRepo<PayCheck>
+
+interface UnionMembershipRepo : MonoRepo<UnionMembership> {
     fun updateDueRate(employeeId: UUID, dueRate: Int)
     fun noMember(employeeId: UUID)
 }

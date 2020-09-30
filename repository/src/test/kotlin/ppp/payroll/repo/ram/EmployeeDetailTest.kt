@@ -5,16 +5,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
 import ppp.payroll.EmployeeDetail
+import ppp.payroll.EmployeeDetailRepo
 import ppp.payroll.EmployeeRepo
-import ppp.payroll.MonoRepo
 import java.time.Instant
 import java.util.*
 
-class UserDetailTest {
+class EmployeeDetailTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val detailRepo: MonoRepo<EmployeeDetail> = MonoRepoBase(employeeRepo)
+    private val detailRepo: EmployeeDetailRepo = EmployeeDetailRepoImpl(employeeRepo)
 
     @Test
     fun `добавим сведения о работнике`() {

@@ -10,7 +10,7 @@ class PayMethodTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)
+    private val payMethodRepo: PayMethodRepo = PayMethodRepoImpl(employeeRepo)
 
     @Test
     fun `добавляем Hold`() {

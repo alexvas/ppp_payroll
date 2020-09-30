@@ -5,7 +5,7 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
 
-class MultiRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MultiRepo<T> {
+abstract class MultiRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MultiRepo<T> {
     private val modificationLock: Any = Any()
     private val features: MutableMap<UUID, MutableSet<T>> = LinkedHashMap()
 
@@ -41,7 +41,7 @@ class MultiRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo)
     override fun featuresFor(employeeId: UUID) = features[employeeId]?.toList() ?: emptyList()
 }
 
-open class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MonoRepo<T> {
+abstract class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeRepo) : MonoRepo<T> {
     internal val modificationLock: Any = Any()
     internal val features: MutableMap<UUID, T> = LinkedHashMap()
 
@@ -89,6 +89,14 @@ open class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: EmployeeR
         features[employeeId] = updated
     }
 }
+
+class EmployeeDetailRepoImpl(employeeRepo: EmployeeRepo) : EmployeeDetailRepo, MonoRepoBase<EmployeeDetail>(employeeRepo)
+class TimeCardRepoImpl(employeeRepo: EmployeeRepo) : TimeCardRepo, MultiRepoBase<TimeCard>(employeeRepo)
+class SalesReceiptRepoImpl(employeeRepo: EmployeeRepo) : SalesReceiptRepo, MultiRepoBase<SalesReceipt>(employeeRepo)
+class UnionChargeRepoImpl(employeeRepo: EmployeeRepo) : UnionChargeRepo, MultiRepoBase<UnionCharge>(employeeRepo)
+class PayMethodRepoImpl(employeeRepo: EmployeeRepo) : PayMethodRepo, MonoRepoBase<PayMethod>(employeeRepo)
+class WageRepoImpl(employeeRepo: EmployeeRepo) : WageRepo, MonoRepoBase<Wage>(employeeRepo)
+class PayCheckRepoImpl(employeeRepo: EmployeeRepo) : PayCheckRepo, MultiRepoBase<PayCheck>(employeeRepo)
 
 class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo, MonoRepoBase<UnionMembership>(employeeRepo) {
     override fun updateDueRate(employeeId: UUID, dueRate: Int) {

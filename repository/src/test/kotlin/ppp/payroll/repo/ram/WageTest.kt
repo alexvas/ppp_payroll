@@ -11,7 +11,7 @@ class WageTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
+    private val wageRepo: WageRepo = WageRepoImpl(employeeRepo)
 
     @Test
     fun `создаём работника с почасовой ставкой`() {

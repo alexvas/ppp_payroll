@@ -11,19 +11,14 @@ class EmployeeTests {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val timeCardRepo: MultiRepo<TimeCard> = MultiRepoBase(employeeRepo)
-
-    private val salesReceiptRepo: MultiRepo<SalesReceipt> = MultiRepoBase(employeeRepo)
-
-    private val unionChargeRepo: MonoRepo<UnionCharge> = MonoRepoBase(employeeRepo)
-
-    private val payMethodRepo: MonoRepo<PayMethod> = MonoRepoBase(employeeRepo)
-
-    private val wageRepo: MonoRepo<Wage> = MonoRepoBase(employeeRepo)
-
-    private val payCheckRepo: MultiRepo<PayCheck> = MultiRepoBase(employeeRepo)
-
-    private val detailRepo: MonoRepo<EmployeeDetail> = MonoRepoBase(employeeRepo)
+    private val timeCardRepo: TimeCardRepo = TimeCardRepoImpl(employeeRepo)
+    private val salesReceiptRepo: SalesReceiptRepo = SalesReceiptRepoImpl(employeeRepo)
+    private val unionChargeRepo: UnionChargeRepo = UnionChargeRepoImpl(employeeRepo)
+    private val unionMembershipRepo: UnionMembershipRepo = UnionMembershipRepoImpl(employeeRepo)
+    private val payMethodRepo: PayMethodRepo = PayMethodRepoImpl(employeeRepo)
+    private val wageRepo: WageRepo = WageRepoImpl(employeeRepo)
+    private val payCheckRepo: PayCheckRepo = PayCheckRepoImpl(employeeRepo)
+    private val detailRepo: EmployeeDetailRepo = EmployeeDetailRepoImpl(employeeRepo)
 
     private val petya = Employee()
 
@@ -92,13 +87,23 @@ class EmployeeTests {
     }
 
     @Test
-    fun `можно удалить работника с профсоюзным взносом (удалится отовсюду)`() {
+    fun `можно удалить работника с членством в профсоюзе (удалится отовсюду)`() {
+        val employee = Employee()
+        employeeRepo.add(employee)
+        val charge = UnionMembership(employee.id, 1812)
+        unionMembershipRepo.add(charge)
+        employeeRepo.remove(employee.id)
+        assertThat(unionMembershipRepo.getFeatureFor(employee.id) == null)
+    }
+
+    @Test
+    fun `можно удалить работника с профсоюзным сбором (удалится отовсюду)`() {
         val employee = Employee()
         employeeRepo.add(employee)
         val charge = UnionCharge(employee.id, 1700)
         unionChargeRepo.add(charge)
         employeeRepo.remove(employee.id)
-        assertThat(unionChargeRepo.getFeatureFor(employee.id) == null)
+        assertThat(unionChargeRepo.featuresFor(employee.id).isEmpty())
     }
 
     @Test

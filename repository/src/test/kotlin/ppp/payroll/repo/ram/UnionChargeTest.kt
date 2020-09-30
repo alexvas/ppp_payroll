@@ -6,15 +6,15 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
 import ppp.payroll.EmployeeRepo
-import ppp.payroll.MultiRepo
 import ppp.payroll.UnionCharge
+import ppp.payroll.UnionChargeRepo
 import java.util.*
 
 class UnionChargeTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val unionChargeRepo: MultiRepo<UnionCharge> = MultiRepoBase(employeeRepo)
+    private val unionChargeRepo: UnionChargeRepo = UnionChargeRepoImpl(employeeRepo)
 
     private val employee = Employee()
 

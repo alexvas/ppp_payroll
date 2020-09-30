@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
 import ppp.payroll.EmployeeRepo
-import ppp.payroll.MultiRepo
 import ppp.payroll.PayCheck
+import ppp.payroll.PayCheckRepo
 import java.time.Instant
 import java.util.*
 
@@ -15,7 +15,7 @@ class PayCheckTest {
 
     private val employeeRepo: EmployeeRepo = EmployeeRepoImpl()
 
-    private val payCheckRepo: MultiRepo<PayCheck> = MultiRepoBase(employeeRepo)
+    private val payCheckRepo: PayCheckRepo = PayCheckRepoImpl(employeeRepo)
 
     private val employee = Employee()
 
