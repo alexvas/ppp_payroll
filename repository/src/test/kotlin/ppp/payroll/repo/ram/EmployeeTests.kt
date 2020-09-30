@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.*
 import java.time.Instant
+import java.time.LocalDate
 
 class EmployeeTests {
 
@@ -120,7 +121,7 @@ class EmployeeTests {
     fun `можно удалить работника с зарплатой (удалится отовсюду)`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val wage = FlatMonthlySalary(employee.id, 15)
+        val wage = WageFlatMonthlySalary(employee.id, 15)
         wageRepo.add(wage)
         employeeRepo.remove(employee.id)
         assertThat(wageRepo.getFeatureFor(employee.id) == null)
@@ -130,7 +131,7 @@ class EmployeeTests {
     fun `можно удалить работника с выплатами зарплаты (удалится отовсюду)`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val check = PayCheck(employee.id, Instant.now(), 15, "выплачено в банк Голдман Сакс")
+        val check = PayCheck(employee.id, LocalDate.now(), 15, "выплачено в банк Голдман Сакс")
         payCheckRepo.add(check)
         employeeRepo.remove(employee.id)
         assertThat(payCheckRepo.featuresFor(employee.id).isEmpty())

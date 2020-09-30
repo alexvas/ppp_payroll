@@ -17,7 +17,7 @@ class WageTest {
     fun `создаём работника с почасовой ставкой`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val wage: Wage = HourlyRate(
+        val wage: Wage = WageHourlyRate(
                 employee.id,
                 100,
         )
@@ -25,14 +25,14 @@ class WageTest {
         val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.HOURLY_RATE)
-        assertThat((savedWage as HourlyRate).hourlyRate).isEqualTo(100)
+        assertThat((savedWage as WageHourlyRate).hourlyRate).isEqualTo(100)
     }
 
     @Test
     fun `создаём работника с постоянной зарплатой`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val wage: Wage = FlatMonthlySalary(
+        val wage: Wage = WageFlatMonthlySalary(
                 employee.id,
                 120,
         )
@@ -40,14 +40,14 @@ class WageTest {
         val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.FLAT_MONTHLY_SALARY)
-        assertThat((savedWage as FlatMonthlySalary).monthlySalary).isEqualTo(120)
+        assertThat((savedWage as WageFlatMonthlySalary).monthlySalary).isEqualTo(120)
     }
 
     @Test
     fun `создаём работника с процентной выплатой`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val wage: Wage = Commission(
+        val wage: Wage = WageCommission(
                 employee.id,
                 8,
                 12.0
@@ -56,7 +56,7 @@ class WageTest {
         val savedWage = wageRepo.getFeatureFor(employee.id)
         assertThat(savedWage).isNotNull
         assertThat(savedWage!!.type).isEqualTo(WageType.COMMISSION)
-        val commission = savedWage as Commission
+        val commission = savedWage as WageCommission
         assertThat(commission.monthlySalary).isEqualTo(8)
         assertThat(commission.commission).isCloseTo(12.0, withPercentage(0.00001))
     }
@@ -64,7 +64,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с отрицательной почасовой ставкой`() {
         Assertions.assertThatThrownBy {
-            HourlyRate(
+            WageHourlyRate(
                     UUID.randomUUID(),
                     -100
             )
@@ -76,7 +76,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с нулевой почасовой ставкой`() {
         Assertions.assertThatThrownBy {
-            HourlyRate(
+            WageHourlyRate(
                     UUID.randomUUID(),
                     0
             )
@@ -88,7 +88,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с отрицательной зарплатой`() {
         Assertions.assertThatThrownBy {
-            FlatMonthlySalary(
+            WageFlatMonthlySalary(
                     UUID.randomUUID(),
                     -1
             )
@@ -100,7 +100,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с нулевой зарплатой`() {
         Assertions.assertThatThrownBy {
-            FlatMonthlySalary(
+            WageFlatMonthlySalary(
                     UUID.randomUUID(),
                     0
             )
@@ -112,7 +112,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с нулевой комиссией`() {
         Assertions.assertThatThrownBy {
-            Commission(
+            WageCommission(
                     UUID.randomUUID(),
                     10,
                     0.0
@@ -125,7 +125,7 @@ class WageTest {
     @Test
     fun `нельзя создать работника с комиссией, превышающей 100%`() {
         Assertions.assertThatThrownBy {
-            Commission(
+            WageCommission(
                     UUID.randomUUID(),
                     10,
                     110.0
@@ -139,13 +139,13 @@ class WageTest {
     fun `меняем зарплату на постоянную`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val hourly: Wage = HourlyRate(
+        val hourly: Wage = WageHourlyRate(
                 employee.id,
                 100,
         )
         wageRepo.add(hourly)
 
-        val flat: Wage = FlatMonthlySalary(
+        val flat: Wage = WageFlatMonthlySalary(
                 employee.id,
                 120,
         )
@@ -159,13 +159,13 @@ class WageTest {
     fun `меняем зарплату на процентную выплату`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val hourly: Wage = HourlyRate(
+        val hourly: Wage = WageHourlyRate(
                 employee.id,
                 100,
         )
         wageRepo.add(hourly)
 
-        val commission: Wage = Commission(
+        val commission: Wage = WageCommission(
                 employee.id,
                 8,
                 12.0
@@ -181,12 +181,12 @@ class WageTest {
         val employee = Employee()
         employeeRepo.add(employee)
 
-        val flat: Wage = FlatMonthlySalary(
+        val flat: Wage = WageFlatMonthlySalary(
                 employee.id,
                 120,
         )
         wageRepo.add(flat)
-        val hourly: Wage = HourlyRate(
+        val hourly: Wage = WageHourlyRate(
                 employee.id,
                 100,
         )

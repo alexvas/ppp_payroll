@@ -10,7 +10,7 @@ interface Wage: EmployeeFeature {
     val type: WageType
 }
 
-data class HourlyRate(
+data class WageHourlyRate(
         override val employeeId: UUID,
         val hourlyRate: Int,
 ) : Wage {
@@ -26,7 +26,7 @@ data class HourlyRate(
             require(hourlyRate > 0) { "hourly rate must be positive" }
 }
 
-data class FlatMonthlySalary(
+data class WageFlatMonthlySalary(
         override val employeeId: UUID,
         val monthlySalary: Int,
 ) : Wage {
@@ -39,7 +39,7 @@ data class FlatMonthlySalary(
     }
 }
 
-data class Commission(
+data class WageCommission(
         override val employeeId: UUID,
         val monthlySalary: Int,
         val commission: Double,

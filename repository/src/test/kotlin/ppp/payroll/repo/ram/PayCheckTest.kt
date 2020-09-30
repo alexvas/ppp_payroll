@@ -8,7 +8,7 @@ import ppp.payroll.Employee
 import ppp.payroll.EmployeeRepo
 import ppp.payroll.PayCheck
 import ppp.payroll.PayCheckRepo
-import java.time.Instant
+import java.time.LocalDate
 import java.util.*
 
 class PayCheckTest {
@@ -22,13 +22,13 @@ class PayCheckTest {
     @BeforeAll
     fun setup() {
         employeeRepo.add(employee)
-        val receipt = PayCheck(employee.id, Instant.now(), 230, "выплачено в банк J.P.Morgan")
+        val receipt = PayCheck(employee.id, LocalDate.now(), 230, "выплачено в банк J.P.Morgan")
         payCheckRepo.add(receipt)
     }
 
     @Test
     fun `добавим выплату зарплаты`() {
-        val receipt = PayCheck(employee.id, Instant.now(), 100, "хранится у бухгалтера")
+        val receipt = PayCheck(employee.id, LocalDate.now(), 100, "хранится у бухгалтера")
         payCheckRepo.add(receipt)
         assertThat(payCheckRepo.allFeatures()).contains(receipt)
         assertThat(payCheckRepo.featuresFor(employee.id)).contains(receipt)
@@ -36,7 +36,7 @@ class PayCheckTest {
 
     @Test
     fun `конкретную выплату зарплаты нельзя учесть дважды`() {
-        val receipt = PayCheck(employee.id, Instant.now().plusMillis(150), 12, "отослано на домашний адрес")
+        val receipt = PayCheck(employee.id, LocalDate.now().plusDays(3), 12, "отослано на домашний адрес")
         payCheckRepo.add(receipt)
         Assertions.assertThatThrownBy {
             payCheckRepo.add(receipt)
@@ -47,7 +47,7 @@ class PayCheckTest {
 
     @Test
     fun `нельзя учесть выплату зарплаты для несуществующего работника`() {
-        val receipt = PayCheck(UUID.randomUUID(), Instant.now(), 1, "отдано в пользу бедных")
+        val receipt = PayCheck(UUID.randomUUID(), LocalDate.now(), 1, "отдано в пользу бедных")
         Assertions.assertThatThrownBy {
             payCheckRepo.add(receipt)
         }

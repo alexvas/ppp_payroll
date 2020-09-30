@@ -53,7 +53,7 @@ class EmployeeCreatorTest {
                 "Вася",
                 "где-то"
         )
-        val wage: Wage = HourlyRate(employeeId, 12)
+        val wage: Wage = WageHourlyRate(employeeId, 12)
         val payMethod = PayMethodDirect(
                 employeeId,
                 "Deutsche Bank",
