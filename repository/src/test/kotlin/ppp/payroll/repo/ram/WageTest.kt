@@ -29,7 +29,7 @@ class WageTest {
     }
 
     @Test
-    fun `создаём работника с постоянной зарплатой`() {
+    fun `создаём работника с фиксированной ставкой`() {
         val employee = Employee()
         employeeRepo.add(employee)
         val wage: Wage = WageFlatMonthlySalary(
@@ -44,7 +44,7 @@ class WageTest {
     }
 
     @Test
-    fun `создаём работника с процентной выплатой`() {
+    fun `создаём работника с комисионными`() {
         val employee = Employee()
         employeeRepo.add(employee)
         val wage: Wage = WageCommission(
@@ -86,7 +86,7 @@ class WageTest {
     }
 
     @Test
-    fun `нельзя создать работника с отрицательной зарплатой`() {
+    fun `нельзя создать работника с отрицательной фиксированной ставкой`() {
         Assertions.assertThatThrownBy {
             WageFlatMonthlySalary(
                     UUID.randomUUID(),
@@ -98,7 +98,7 @@ class WageTest {
     }
 
     @Test
-    fun `нельзя создать работника с нулевой зарплатой`() {
+    fun `нельзя создать работника с нулевой фиксированной ставкой`() {
         Assertions.assertThatThrownBy {
             WageFlatMonthlySalary(
                     UUID.randomUUID(),
@@ -110,7 +110,7 @@ class WageTest {
     }
 
     @Test
-    fun `нельзя создать работника с нулевой комиссией`() {
+    fun `нельзя создать работника с нулевыми комиссионными`() {
         Assertions.assertThatThrownBy {
             WageCommission(
                     UUID.randomUUID(),
@@ -123,7 +123,7 @@ class WageTest {
     }
 
     @Test
-    fun `нельзя создать работника с комиссией, превышающей 100%`() {
+    fun `нельзя создать работника с комиссионными, превышающими 100%`() {
         Assertions.assertThatThrownBy {
             WageCommission(
                     UUID.randomUUID(),
@@ -136,7 +136,7 @@ class WageTest {
     }
 
     @Test
-    fun `меняем зарплату на постоянную`() {
+    fun `меняем зарплату на фиксированную ставку`() {
         val employee = Employee()
         employeeRepo.add(employee)
         val hourly: Wage = WageHourlyRate(
@@ -156,7 +156,7 @@ class WageTest {
     }
 
     @Test
-    fun `меняем зарплату на процентную выплату`() {
+    fun `меняем зарплату на комиссионные`() {
         val employee = Employee()
         employeeRepo.add(employee)
         val hourly: Wage = WageHourlyRate(
@@ -177,7 +177,7 @@ class WageTest {
     }
 
     @Test
-    fun `меняем зарплату на почасовую`() {
+    fun `меняем зарплату на почасовую ставку`() {
         val employee = Employee()
         employeeRepo.add(employee)
 

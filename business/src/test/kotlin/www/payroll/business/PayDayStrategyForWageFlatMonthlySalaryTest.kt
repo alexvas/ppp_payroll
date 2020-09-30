@@ -12,7 +12,7 @@ import java.util.*
 class PayDayStrategyForWageFlatMonthlySalaryTest {
 
     @Test
-    fun `в последний рабочий день месяца надо платить зарплату новым работникам на почасовой ставке`() {
+    fun `в последний рабочий день месяца надо платить зарплату новым работникам на фиксированной ставке`() {
         // given
         val strategy: PayDayStrategy = PayDayStrategyForWageFlatMonthlySalary(emptyPayCheckRepo())
         val wage: Wage = WageFlatMonthlySalary(UUID.randomUUID(), 17)
@@ -26,7 +26,7 @@ class PayDayStrategyForWageFlatMonthlySalaryTest {
     }
 
     @Test
-    fun `_не_ в последний рабочий день месяца зарплату новым работникам на почасовой ставке платить не надо`() {
+    fun `_не_ в последний рабочий день месяца зарплату новым работникам на фиксированной ставке платить не надо`() {
         // given
         val strategy: PayDayStrategy = PayDayStrategyForWageFlatMonthlySalary(emptyPayCheckRepo())
         val wage: Wage = WageFlatMonthlySalary(UUID.randomUUID(), 17)

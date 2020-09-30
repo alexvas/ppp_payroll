@@ -81,21 +81,21 @@ class PayDayStrategyForWageHourlyRateTest {
         assertThat(result).isTrue
     }
 
-    private fun givenThereIsAPaymentForTheDayFor(employeeId: UUID, day: LocalDate): PayCheckRepo {
-        val payCheck = PayCheck(employeeId, day, 1349873, "уже уплочено")
-        val payCheckRepo: PayCheckRepo = mockk()
-        every {
-            payCheckRepo.featuresFor(any())
-        } returns listOf(payCheck)
-        return payCheckRepo
-    }
-
 }
 
-internal fun emptyPayCheckRepo(): PayCheckRepo {
+fun emptyPayCheckRepo(): PayCheckRepo {
     val payCheckRepo: PayCheckRepo = mockk()
     every {
         payCheckRepo.featuresFor(any())
     } returns listOf()
+    return payCheckRepo
+}
+
+fun givenThereIsAPaymentForTheDayFor(employeeId: UUID, day: LocalDate): PayCheckRepo {
+    val payCheck = PayCheck(employeeId, day, 1349873, "уже уплочено")
+    val payCheckRepo: PayCheckRepo = mockk()
+    every {
+        payCheckRepo.featuresFor(any())
+    } returns listOf(payCheck)
     return payCheckRepo
 }
