@@ -1,5 +1,7 @@
-package www.payroll.business
+package ppp.payroll.business.payDay
 
+import io.mockk.confirmVerified
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import ppp.payroll.Wage
@@ -16,21 +18,29 @@ class PayDayStrategyForWageCommissionTest {
     @Test
     fun `в пятницу надо платить зарплату новым работникам с комиссионными`() {
         // given
-        val strategy: PayDayStrategy = PayDayStrategyForWageCommission(emptyPayCheckRepo())
-        val wage: Wage = WageCommission(UUID.randomUUID(), 17, 3.0)
+        val employeeId = UUID.randomUUID()
+        val payCheckRepo = emptyPayCheckRepo()
+        val strategy: PayDayStrategy = PayDayStrategyForWageCommission(payCheckRepo)
+        val wage: Wage = WageCommission(employeeId, 17, 3.0)
 
         // when
         val result = strategy.isPayDayFor(wage, FRIDAY)
 
         // then
         assertThat(result).isTrue
+        verify {
+            payCheckRepo.featuresFor(employeeId)
+        }
+        confirmVerified(payCheckRepo)
     }
 
     @Test
     fun `а _не_ в пятницу _не_ надо платить зарплату новым работникам с комиссионными`() {
         // given
-        val strategy: PayDayStrategy = PayDayStrategyForWageCommission(emptyPayCheckRepo())
-        val wage: Wage = WageCommission(UUID.randomUUID(), 17, 3.0)
+        val employeeId = UUID.randomUUID()
+        val payCheckRepo = emptyPayCheckRepo()
+        val strategy: PayDayStrategy = PayDayStrategyForWageCommission(payCheckRepo)
+        val wage: Wage = WageCommission(employeeId, 17, 3.0)
         val day = FRIDAY.minusDays(1)
 
         // when
@@ -38,6 +48,10 @@ class PayDayStrategyForWageCommissionTest {
 
         // then
         assertThat(result).isFalse
+        verify {
+            payCheckRepo.featuresFor(employeeId)
+        }
+        confirmVerified(payCheckRepo)
     }
 
     @Test
@@ -55,6 +69,10 @@ class PayDayStrategyForWageCommissionTest {
 
         // then
         assertThat(result).isFalse
+        verify {
+            payCheckRepo.featuresFor(employeeId)
+        }
+        confirmVerified(payCheckRepo)
     }
 
 

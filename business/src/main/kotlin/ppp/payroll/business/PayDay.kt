@@ -51,12 +51,6 @@ class PayDayStrategyForWageFlatMonthlySalary(payCheckRepo: PayCheckRepo) : PayDa
 
         return day
     }
-
-    private fun isHoliday(day: LocalDate): Boolean {
-        // for the sake of simplicity do not account for public holidays
-        val dayOfWeek = day.dayOfWeek
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
-    }
 }
 
 class PayDayStrategyForWageCommission(private val payCheckRepo: PayCheckRepo) : PayDayStrategyBase(payCheckRepo) {
@@ -67,4 +61,10 @@ class PayDayStrategyForWageCommission(private val payCheckRepo: PayCheckRepo) : 
         return Period.between(previousPayDay, day).days > DAYS_IN_WEEK
     }
 
+}
+
+fun isHoliday(day: LocalDate): Boolean {
+    // for the sake of simplicity do not account for public holidays
+    val dayOfWeek = day.dayOfWeek
+    return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
 }

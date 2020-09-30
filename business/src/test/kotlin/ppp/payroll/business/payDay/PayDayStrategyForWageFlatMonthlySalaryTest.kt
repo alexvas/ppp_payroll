@@ -1,4 +1,4 @@
-package www.payroll.business
+package ppp.payroll.business.payDay
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -9,6 +9,8 @@ import ppp.payroll.business.PayDayStrategyForWageFlatMonthlySalary
 import java.time.LocalDate
 import java.util.*
 
+val LAST_WORKING_DAY_OF_WINTER: LocalDate = LocalDate.of(2020, 2, 28)
+
 class PayDayStrategyForWageFlatMonthlySalaryTest {
 
     @Test
@@ -16,10 +18,9 @@ class PayDayStrategyForWageFlatMonthlySalaryTest {
         // given
         val strategy: PayDayStrategy = PayDayStrategyForWageFlatMonthlySalary(emptyPayCheckRepo())
         val wage: Wage = WageFlatMonthlySalary(UUID.randomUUID(), 17)
-        val day = LocalDate.of(2020, 3, 31) // это был вторник
 
         // when
-        val result = strategy.isPayDayFor(wage, day)
+        val result = strategy.isPayDayFor(wage, LAST_WORKING_DAY_OF_WINTER)
 
         // then
         assertThat(result).isTrue
@@ -30,10 +31,9 @@ class PayDayStrategyForWageFlatMonthlySalaryTest {
         // given
         val strategy: PayDayStrategy = PayDayStrategyForWageFlatMonthlySalary(emptyPayCheckRepo())
         val wage: Wage = WageFlatMonthlySalary(UUID.randomUUID(), 17)
-        val day = LocalDate.of(2020, 3, 27) // это была пятница
 
         // when
-        val result = strategy.isPayDayFor(wage, day)
+        val result = strategy.isPayDayFor(wage, LAST_WORKING_DAY_OF_WINTER.minusDays(5))
 
         // then
         assertThat(result).isFalse

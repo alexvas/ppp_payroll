@@ -1,11 +1,9 @@
-package www.payroll.business
+package ppp.payroll.business
 
 import io.mockk.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import ppp.payroll.*
-import ppp.payroll.business.EmployeeCreation
-import ppp.payroll.business.EmployeeCreatorFacade
 import java.util.*
 
 class EmployeeCreatorTest {

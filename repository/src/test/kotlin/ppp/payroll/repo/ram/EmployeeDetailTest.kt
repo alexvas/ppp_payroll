@@ -7,7 +7,6 @@ import ppp.payroll.Employee
 import ppp.payroll.EmployeeDetail
 import ppp.payroll.EmployeeDetailRepo
 import ppp.payroll.EmployeeRepo
-import java.time.Instant
 import java.util.*
 
 class EmployeeDetailTest {
@@ -25,7 +24,6 @@ class EmployeeDetailTest {
                 employee.id,
                 name ="Наташа Ростова",
                 address = "дом Ростовых",
-                recruitment = Instant.now().plusMillis(1300)
         )
         detailRepo.add(detail)
         assertThat(detailRepo.getFeatureFor(employee.id)).isEqualTo(detail)
@@ -40,7 +38,6 @@ class EmployeeDetailTest {
                 employee.id,
                 name ="Наташа Ростова",
                 address = "дом Ростовых",
-                recruitment = Instant.now().plusMillis(1300)
         )
         detailRepo.add(detail)
         detailRepo.update(employee.id) {
@@ -59,7 +56,6 @@ class EmployeeDetailTest {
                 employee.id,
                 name ="Наташа Ростова",
                 address = "дом Ростовых",
-                recruitment = Instant.now().plusMillis(1300)
         )
         detailRepo.add(detail)
         detailRepo.update(employee.id) {
@@ -67,28 +63,6 @@ class EmployeeDetailTest {
         }
 
         assertThat(detailRepo.getFeatureFor(employee.id)!!.address).isEqualTo("дом Безуховых")
-    }
-
-    @Test
-    fun `обновим дату принятия на работу`() {
-        val employee = Employee()
-        employeeRepo.add(employee)
-
-        val detail = EmployeeDetail(
-                employee.id,
-                name ="Наташа Ростова",
-                address = "дом Ростовых",
-        )
-        val warAndPeacePublication = GregorianCalendar.getInstance()
-        warAndPeacePublication.set(1865, 1, 1)
-        val publication = warAndPeacePublication.time.toInstant()
-
-        detailRepo.add(detail)
-        detailRepo.update(employee.id) {
-            it.copy(recruitment = publication)
-        }
-
-        assertThat(detailRepo.getFeatureFor(employee.id)!!.recruitment).isEqualTo(publication)
     }
 
     @Test

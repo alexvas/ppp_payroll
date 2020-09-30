@@ -1,7 +1,7 @@
 package ppp.payroll.repo.ram
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import ppp.payroll.Employee
@@ -38,7 +38,7 @@ class PayCheckTest {
     fun `конкретную выплату зарплаты нельзя учесть дважды`() {
         val receipt = PayCheck(employee.id, LocalDate.now().plusDays(3), 12, "отослано на домашний адрес")
         payCheckRepo.add(receipt)
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             payCheckRepo.add(receipt)
         }
                 .isInstanceOf(RuntimeException::class.java)
@@ -48,7 +48,7 @@ class PayCheckTest {
     @Test
     fun `нельзя учесть выплату зарплаты для несуществующего работника`() {
         val receipt = PayCheck(UUID.randomUUID(), LocalDate.now(), 1, "отдано в пользу бедных")
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             payCheckRepo.add(receipt)
         }
                 .isInstanceOf(RuntimeException::class.java)

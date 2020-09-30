@@ -1,13 +1,11 @@
 package ppp.payroll
 
-import java.time.Instant
 import java.util.*
 
 data class EmployeeDetail(
         override val employeeId: UUID,
         val name: String,
         val address: String,
-        val recruitment: Instant = Instant.now(),
 ): EmployeeFeature {
 
     init {
