@@ -31,14 +31,6 @@ class PayDayStrategyForWageHourlyRateTest {
         assertThat(result).isTrue
     }
 
-    private fun emptyPayCheckRepo(): PayCheckRepo {
-        val payCheckRepo: PayCheckRepo = mockk()
-        every {
-            payCheckRepo.featuresFor(any())
-        } returns listOf()
-        return payCheckRepo
-    }
-
     @Test
     fun `проверяем, что по субботам платить зарплату новым работникам на почасовой ставке _не_ надо`() {
         // given
@@ -98,4 +90,12 @@ class PayDayStrategyForWageHourlyRateTest {
         return payCheckRepo
     }
 
+}
+
+internal fun emptyPayCheckRepo(): PayCheckRepo {
+    val payCheckRepo: PayCheckRepo = mockk()
+    every {
+        payCheckRepo.featuresFor(any())
+    } returns listOf()
+    return payCheckRepo
 }

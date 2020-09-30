@@ -4,6 +4,7 @@ import ppp.payroll.PayCheckRepo
 import ppp.payroll.Wage
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 interface PayDayStrategy {
@@ -26,11 +27,31 @@ abstract class PayDayStrategyBase(private val payCheckRepo: PayCheckRepo) : PayD
 
 }
 
-
 class PayDayStrategyForWageHourlyRate(payCheckRepo: PayCheckRepo) : PayDayStrategyBase(payCheckRepo) {
 
     override fun doFindIsPayDayFor(wage: Wage, day: LocalDate): Boolean {
         return day.dayOfWeek == DayOfWeek.FRIDAY
     }
 
+}
+
+class PayDayStrategyForWageFlatMonthlySalary(payCheckRepo: PayCheckRepo) : PayDayStrategyBase(payCheckRepo) {
+
+    override fun doFindIsPayDayFor(wage: Wage, day: LocalDate): Boolean {
+        return day == findLastWorkingDayOfMonth(day)
+    }
+
+    private fun findLastWorkingDayOfMonth(theSameMonthDay: LocalDate): LocalDate {
+        var day: LocalDate = theSameMonthDay.with(TemporalAdjusters.lastDayOfMonth())
+        while (isHoliday(day))
+            day = day.minusDays(1)
+
+        return day
+    }
+
+    private fun isHoliday(day: LocalDate): Boolean {
+        // for the sake of simplicity do not account for public holidays
+        val dayOfWeek = day.dayOfWeek
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
+    }
 }
