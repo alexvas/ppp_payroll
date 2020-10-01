@@ -9,9 +9,7 @@ import java.time.temporal.TemporalAdjusters
 
 const val DAYS_IN_WEEK = 7
 
-fun LocalDate.isFriday(): Boolean {
-    return dayOfWeek == DayOfWeek.FRIDAY
-}
+fun LocalDate.isFriday() = dayOfWeek == DayOfWeek.FRIDAY
 
 interface PayDayStrategy {
     fun isPayDayFor(wage: Wage, day: LocalDate): Boolean
