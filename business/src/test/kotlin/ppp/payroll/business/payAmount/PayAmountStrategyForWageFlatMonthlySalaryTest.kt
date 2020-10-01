@@ -17,7 +17,7 @@ class PayAmountStrategyForWageFlatMonthlySalaryTest {
     private val employeeId = UUID.randomUUID()
 
     @Test
-    fun `первая зарплата исчисляется со дня принятия на работу`() {
+    fun `первая зарплата исчисляется со дня принятия на работу, включая этот день`() {
         // given
         val payCheckRepo = noPayment()
         val strategy: PayAmountStrategy = PayAmountStrategyForWageFlatMonthlySalary(payCheckRepo)
@@ -27,7 +27,7 @@ class PayAmountStrategyForWageFlatMonthlySalaryTest {
         val result = strategy.amount(wage, LAST_WORKING_DAY_OF_WINTER)
 
         // then
-        assertThat(result).isEqualTo(3000)
+        assertThat(result).isEqualTo(4000)
         payCheckRepo.lastPayDayWasCalledWith(employeeId)
     }
 

@@ -9,13 +9,13 @@ enum class WageType {
 
 interface Wage: EmployeeFeature {
     val type: WageType
-    val startDate: LocalDate
+    val startDay: LocalDate
 }
 
 data class WageHourlyRate(
         override val employeeId: UUID,
         val hourlyRate: Int,
-        override val startDate: LocalDate = LocalDate.now(),
+        override val startDay: LocalDate = LocalDate.now(),
 ) : Wage {
 
     override val type: WageType
@@ -32,7 +32,7 @@ data class WageHourlyRate(
 data class WageFlatMonthlySalary(
         override val employeeId: UUID,
         val monthlySalary: Int,
-        override val startDate: LocalDate = LocalDate.now(),
+        override val startDay: LocalDate = LocalDate.now(),
 ) : Wage {
 
     override val type: WageType
@@ -47,7 +47,7 @@ data class WageCommission(
         override val employeeId: UUID,
         val monthlySalary: Int,
         val commission: Double,
-        override val startDate: LocalDate = LocalDate.now(),
+        override val startDay: LocalDate = LocalDate.now(),
 ) : Wage {
 
     override val type: WageType

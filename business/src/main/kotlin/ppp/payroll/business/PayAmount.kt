@@ -16,9 +16,16 @@ class PayAmountStrategyForWageFlatMonthlySalary(private val payCheckRepo: PayChe
         require(wage is WageFlatMonthlySalary) {
             "unsupported wage type: ${wage.type}"
         }
-        val startDate = payCheckRepo.lastPayDay(wage.employeeId) ?: wage.startDate
+        val lastPayDay = payCheckRepo.lastPayDay(wage.employeeId)
+        val startDate = lastPayDay ?: wage.startDay
 
-        val employeeWorked: Int = countWorkDays(startDate, day)
+        val employeeWorkedPreliminary = countWorkDays(startDate, day)
+        // a settlement is always final
+        val employeeWorked = if (lastPayDay == null)
+            // also count start date in case of no last payment
+            employeeWorkedPreliminary + 1
+        else
+            employeeWorkedPreliminary
 
         val firstDayOfMonth = day.with(TemporalAdjusters.firstDayOfMonth())
         val lastDayOfMonth = day.with(TemporalAdjusters.lastDayOfMonth())
