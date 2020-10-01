@@ -34,6 +34,65 @@ class SalesReceiptTest {
     }
 
     @Test
+    fun `получим продажи с невыплаченной комиссией`() {
+        // given
+        val ann = Employee()
+        employeeRepo.add(ann)
+        val receipt = SalesReceipt(ann.id, UUID.randomUUID(), 200)
+        salesReceiptRepo.add(receipt)
+
+        // when
+        val annResult = salesReceiptRepo.unpaidReceipts(ann.id)
+        val employeeResult = salesReceiptRepo.unpaidReceipts(employee.id)
+
+        // then
+        assertThat(annResult).isNotEmpty.hasSize(1).contains(receipt)
+        assertThat(employeeResult).isNotEmpty.doesNotContain(receipt)
+    }
+
+    @Test
+    fun `_не_ получим продажи с выплаченной комиссией`() {
+        // given
+        val ann = Employee()
+        employeeRepo.add(ann)
+        val receipt = SalesReceipt(
+                employeeId = ann.id,
+                id = UUID.randomUUID(),
+                amount = 200,
+                commissionPayed = true,
+        )
+        salesReceiptRepo.add(receipt)
+
+        // when
+        val annResult = salesReceiptRepo.unpaidReceipts(ann.id)
+        val employeeResult = salesReceiptRepo.unpaidReceipts(employee.id)
+
+        // then
+        assertThat(annResult).isEmpty()
+        assertThat(employeeResult).isNotEmpty.doesNotContain(receipt)
+    }
+
+    @Test
+    fun `можем пометить комиссию выплаченной`() {
+        // given
+        val ann = Employee()
+        employeeRepo.add(ann)
+        val receipt = SalesReceipt(
+                employeeId = ann.id,
+                id = UUID.randomUUID(),
+                amount = 200,
+                commissionPayed = false,
+        )
+        salesReceiptRepo.add(receipt)
+
+        // when
+        salesReceiptRepo.markReceiptsAsPaid(listOf(receipt))
+
+        // then
+        assertThat(receipt.commissionPayed).isTrue
+    }
+
+    @Test
     fun `конкретную продажу нельзя учесть дважды`() {
         val receipt = SalesReceipt(employee.id, UUID.randomUUID(), 12)
         salesReceiptRepo.add(receipt)
