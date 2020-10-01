@@ -96,9 +96,17 @@ class SalesReceiptRepoImpl(employeeRepo: EmployeeRepo) : SalesReceiptRepo, Multi
 class UnionChargeRepoImpl(employeeRepo: EmployeeRepo) : UnionChargeRepo, MultiRepoBase<UnionCharge>(employeeRepo)
 class PayMethodRepoImpl(employeeRepo: EmployeeRepo) : PayMethodRepo, MonoRepoBase<PayMethod>(employeeRepo)
 class WageRepoImpl(employeeRepo: EmployeeRepo) : WageRepo, MonoRepoBase<Wage>(employeeRepo)
-class PayCheckRepoImpl(employeeRepo: EmployeeRepo) : PayCheckRepo, MultiRepoBase<PayCheck>(employeeRepo)
+
+class PayCheckRepoImpl(employeeRepo: EmployeeRepo) : PayCheckRepo, MultiRepoBase<PayCheck>(employeeRepo) {
+
+    override fun lastPayDay(employeeId: UUID) =
+            featuresFor(employeeId).asSequence()
+                    .map { it.date }
+                    .maxOrNull()
+}
 
 class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo, MonoRepoBase<UnionMembership>(employeeRepo) {
+
     override fun updateDueRate(employeeId: UUID, dueRate: Int) {
         update(employeeId) {
             it.copy(dueRate = dueRate)
@@ -110,5 +118,4 @@ class UnionMembershipRepoImpl(employeeRepo: EmployeeRepo) : UnionMembershipRepo,
             features.remove(employeeId)
         }
     }
-
 }

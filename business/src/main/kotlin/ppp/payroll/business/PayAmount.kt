@@ -16,7 +16,7 @@ class PayAmountStrategyForWageFlatMonthlySalary(private val payCheckRepo: PayChe
         require(wage is WageFlatMonthlySalary) {
             "unsupported wage type: ${wage.type}"
         }
-        val startDate = payCheckRepo.findPreviousPayDay(wage.employeeId) ?: wage.startDate
+        val startDate = payCheckRepo.lastPayDay(wage.employeeId) ?: wage.startDate
 
         val employeeWorked: Int = countWorkDays(startDate, day)
 

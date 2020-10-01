@@ -6,23 +6,21 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.TemporalAdjusters
-import java.util.*
 
 const val DAYS_IN_WEEK = 7
+
+fun LocalDate.isFriday(): Boolean {
+    return dayOfWeek == DayOfWeek.FRIDAY
+}
 
 interface PayDayStrategy {
     fun isPayDayFor(wage: Wage, day: LocalDate): Boolean
 }
 
-fun PayCheckRepo.findPreviousPayDay(employeeId: UUID) =
-        featuresFor(employeeId).asSequence()
-                .map { it.date }
-                .maxOrNull()
-
 abstract class PayDayStrategyBase(private val payCheckRepo: PayCheckRepo) : PayDayStrategy {
     override fun isPayDayFor(wage: Wage, day: LocalDate): Boolean {
-        val previousPayDay = payCheckRepo.findPreviousPayDay(wage.employeeId)
-        if (day == previousPayDay) return false
+        val lastPayDay = payCheckRepo.lastPayDay(wage.employeeId)
+        if (day == lastPayDay) return false
         return doFindIsPayDayFor(wage, day)
     }
 
@@ -32,9 +30,7 @@ abstract class PayDayStrategyBase(private val payCheckRepo: PayCheckRepo) : PayD
 
 class PayDayStrategyForWageHourlyRate(payCheckRepo: PayCheckRepo) : PayDayStrategyBase(payCheckRepo) {
 
-    override fun doFindIsPayDayFor(wage: Wage, day: LocalDate): Boolean {
-        return day.dayOfWeek == DayOfWeek.FRIDAY
-    }
+    override fun doFindIsPayDayFor(wage: Wage, day: LocalDate) = day.isFriday()
 
 }
 
@@ -56,9 +52,11 @@ class PayDayStrategyForWageFlatMonthlySalary(payCheckRepo: PayCheckRepo) : PayDa
 class PayDayStrategyForWageCommission(private val payCheckRepo: PayCheckRepo) : PayDayStrategyBase(payCheckRepo) {
 
     override fun doFindIsPayDayFor(wage: Wage, day: LocalDate): Boolean {
-        val isFriday = day.dayOfWeek == DayOfWeek.FRIDAY
-        val previousPayDay = payCheckRepo.findPreviousPayDay(wage.employeeId) ?: return isFriday
-        return Period.between(previousPayDay, day).days > DAYS_IN_WEEK
+        val lastPayDay = payCheckRepo.lastPayDay(wage.employeeId)
+        return if (lastPayDay == null)
+            day.isFriday()
+        else
+            Period.between(lastPayDay, day).days > DAYS_IN_WEEK
     }
 
 }

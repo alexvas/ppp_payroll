@@ -1,5 +1,6 @@
 package ppp.payroll
 
+import java.time.LocalDate
 import java.util.*
 
 interface EmployeeFeature {
@@ -63,7 +64,10 @@ interface SalesReceiptRepo : MultiRepo<SalesReceipt>
 interface UnionChargeRepo : MultiRepo<UnionCharge>
 interface PayMethodRepo : MonoRepo<PayMethod>
 interface WageRepo : MonoRepo<Wage>
-interface PayCheckRepo : MultiRepo<PayCheck>
+
+interface PayCheckRepo : MultiRepo<PayCheck> {
+    fun lastPayDay(employeeId: UUID): LocalDate?
+}
 
 interface UnionMembershipRepo : MonoRepo<UnionMembership> {
     fun updateDueRate(employeeId: UUID, dueRate: Int)
