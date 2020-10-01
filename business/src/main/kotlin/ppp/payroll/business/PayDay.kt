@@ -62,9 +62,3 @@ class PayDayStrategyForWageCommission(private val payCheckRepo: PayCheckRepo) : 
     }
 
 }
-
-fun isHoliday(day: LocalDate): Boolean {
-    // for the sake of simplicity do not account for public holidays
-    val dayOfWeek = day.dayOfWeek
-    return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
-}
