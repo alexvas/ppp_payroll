@@ -60,10 +60,14 @@ interface EmployeeRepo {
 
 interface EmployeeDetailRepo : MonoRepo<EmployeeDetail>
 interface TimeCardRepo : MultiRepo<TimeCard>
-interface SalesReceiptRepo : MultiRepo<SalesReceipt>
 interface UnionChargeRepo : MultiRepo<UnionCharge>
 interface PayMethodRepo : MonoRepo<PayMethod>
 interface WageRepo : MonoRepo<Wage>
+
+interface SalesReceiptRepo : MultiRepo<SalesReceipt> {
+    fun unpaidReceipts(employeeId: UUID): List<SalesReceipt>
+    fun markReceiptsAsPaid(receipts: List<SalesReceipt>)
+}
 
 interface PayCheckRepo : MultiRepo<PayCheck> {
     fun lastPayDay(employeeId: UUID): LocalDate?

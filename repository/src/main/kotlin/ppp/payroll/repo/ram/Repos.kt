@@ -92,10 +92,19 @@ abstract class MonoRepoBase<T : EmployeeFeature>(private val employeeRepo: Emplo
 
 class EmployeeDetailRepoImpl(employeeRepo: EmployeeRepo) : EmployeeDetailRepo, MonoRepoBase<EmployeeDetail>(employeeRepo)
 class TimeCardRepoImpl(employeeRepo: EmployeeRepo) : TimeCardRepo, MultiRepoBase<TimeCard>(employeeRepo)
-class SalesReceiptRepoImpl(employeeRepo: EmployeeRepo) : SalesReceiptRepo, MultiRepoBase<SalesReceipt>(employeeRepo)
 class UnionChargeRepoImpl(employeeRepo: EmployeeRepo) : UnionChargeRepo, MultiRepoBase<UnionCharge>(employeeRepo)
 class PayMethodRepoImpl(employeeRepo: EmployeeRepo) : PayMethodRepo, MonoRepoBase<PayMethod>(employeeRepo)
 class WageRepoImpl(employeeRepo: EmployeeRepo) : WageRepo, MonoRepoBase<Wage>(employeeRepo)
+
+class SalesReceiptRepoImpl(employeeRepo: EmployeeRepo) : SalesReceiptRepo, MultiRepoBase<SalesReceipt>(employeeRepo) {
+    override fun unpaidReceipts(employeeId: UUID): List<SalesReceipt> =
+            featuresFor(employeeId).asSequence()
+                    .filter { !it.commissionPayed }
+                    .toList()
+
+    override fun markReceiptsAsPaid(receipts: List<SalesReceipt>) =
+            receipts.forEach { it.commissionPayed = true }
+}
 
 class PayCheckRepoImpl(employeeRepo: EmployeeRepo) : PayCheckRepo, MultiRepoBase<PayCheck>(employeeRepo) {
 

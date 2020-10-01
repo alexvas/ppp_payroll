@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import ppp.payroll.*
 import java.time.Instant
 import java.time.LocalDate
+import java.util.*
 
 class EmployeeTests {
 
@@ -81,7 +82,8 @@ class EmployeeTests {
     fun `можно удалить работника с продажами (удалится отовсюду)`() {
         val employee = Employee()
         employeeRepo.add(employee)
-        val receipt = SalesReceipt(employee.id, Instant.now(), 700)
+        val salesReceiptId = UUID.randomUUID()
+        val receipt = SalesReceipt(employee.id, salesReceiptId, 700)
         salesReceiptRepo.add(receipt)
         employeeRepo.remove(employee.id)
         assertThat(salesReceiptRepo.featuresFor(employee.id).isEmpty())

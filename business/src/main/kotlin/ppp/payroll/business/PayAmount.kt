@@ -1,10 +1,9 @@
 package ppp.payroll.business
 
-import ppp.payroll.PayCheckRepo
-import ppp.payroll.Wage
-import ppp.payroll.WageFlatMonthlySalary
+import ppp.payroll.*
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
+import kotlin.math.roundToInt
 
 interface PayAmountStrategy {
     fun amount(wage: Wage, day: LocalDate): Int
@@ -53,6 +52,30 @@ class PayAmountStrategyForWageFlatMonthlySalary(private val payCheckRepo: PayChe
             endDate = endDate.minusDays(1)
         }
         return counter
+    }
+
+}
+
+fun WageCommission.toWageFlatMonthlySalary() = WageFlatMonthlySalary(employeeId, monthlySalary, startDay)
+
+
+class PayAmountStrategyForWageCommission(payCheckRepo: PayCheckRepo, private val receiptRepo: SalesReceiptRepo) : PayAmountStrategy {
+
+    private val flatMonthlySalaryStrategy = PayAmountStrategyForWageFlatMonthlySalary(payCheckRepo)
+
+    override fun amount(wage: Wage, day: LocalDate): Int {
+        require(wage is WageCommission) {
+            "unsupported wage type: ${wage.type}"
+        }
+        return flatMonthlySalaryStrategy.amount(wage.toWageFlatMonthlySalary(), day) + salesCommission(wage)
+    }
+
+    private fun salesCommission(wage: WageCommission): Int {
+        val unpaid = receiptRepo.unpaidReceipts(wage.employeeId)
+        if (unpaid.isEmpty()) return 0
+        val commission = (unpaid.sumBy { it.amount } * wage.commission / 100).roundToInt()
+        receiptRepo.markReceiptsAsPaid(unpaid)
+        return commission
     }
 
 }
